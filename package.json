@@ -1,0 +1,43 @@
+{
+  "name": "storage-service-zip",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "check:types": "tsc --noEmit",
+    "build": "esbuild `find src \\( -name '*.ts' \\)` --platform=node --outdir=build --resolve-extensions=.js",
+    "build:docker:prod": "docker build . -t my-fastify-app --build-arg APP_ENV=production",
+    "start": "node build",
+    "dev": "tsx watch src .env | pino-pretty --colorize",
+    "pretest": "npm run build",
+    "prepare": "husky install",
+    "cz": "git add . & czg"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "@sinclair/typebox": "^0.31.2",
+    "ajv": "^8.12.0",
+    "dotenv": "^16.3.1",
+    "env-schema": "^5.2.0",
+    "fastify": "^4.21.0",
+    "fastify-plugin": "^4.5.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.3",
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
+    "@typescript-eslint/parser": "^6.4.1",
+    "czg": "^1.7.1",
+    "esbuild": "^0.19.2",
+    "eslint": "^8.47.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "husky": "^8.0.0",
+    "pino-pretty": "^10.2.0",
+    "prettier": "^3.0.2",
+    "tsx": "^3.12.7",
+    "typescript": "^5.1.6"
+  }
+}
