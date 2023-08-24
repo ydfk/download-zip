@@ -1,3 +1,10 @@
+/*
+ * @Description: Copyright (c) ydfk. All rights reserved
+ * @Author: ydfk
+ * @Date: 2023-08-21 17:53:22
+ * @LastEditors: ydfk
+ * @LastEditTime: 2023-08-24 17:59:16
+ */
 import "dotenv/config";
 import fp from "fastify-plugin";
 import { FastifyPluginAsync } from "fastify";
@@ -6,16 +13,15 @@ import Ajv from "ajv";
 
 export enum NodeEnv {
   development = "development",
-  test = "test",
   production = "production",
 }
 
 const ConfigSchema = Type.Strict(
   Type.Object({
     NODE_ENV: Type.Enum(NodeEnv),
-    LOG_LEVEL: Type.String(),
     API_HOST: Type.String(),
     API_PORT: Type.String(),
+    STORAGE_PATH: Type.String(),
   })
 );
 
@@ -33,11 +39,9 @@ const configPlugin: FastifyPluginAsync = async (server) => {
   const validate = ajv.compile(ConfigSchema);
   const valid = validate(process.env);
   if (!valid) {
-    throw new Error(
-      ".env file validation failed - " +
-        JSON.stringify(validate.errors, null, 2)
-    );
+    throw new Error(".env file validation failed - " + JSON.stringify(validate.errors, null, 2));
   }
+  // @ts-ignore
   server.decorate("config", process.env);
 };
 

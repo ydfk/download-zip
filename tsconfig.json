@@ -10,7 +10,11 @@
     "outDir": "build",
     "baseUrl": "src",
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    "paths": {
+      "@/*": ["src/*"],
+      "#/*": ["types/*"]
+    }
   },
   "include": ["src/**/*.ts", "tests/**/*.ts"],
   "exclude": ["node_modules"]

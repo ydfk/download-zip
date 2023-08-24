@@ -1,0 +1,32 @@
+/*
+ * @Description: Copyright (c) ydfk. All rights reserved
+ * @Author: ydfk
+ * @Date: 2023-08-24 12:48:19
+ * @LastEditors: ydfk
+ * @LastEditTime: 2023-08-24 17:17:19
+ */
+import { Type, Static } from "@sinclair/typebox";
+
+export enum ZipTypeEnum {
+  FILE = "file",
+  FOLDER = "folder",
+}
+
+const ZipGenerateItemSchema = Type.Recursive(
+  (This) =>
+    Type.Object({
+      name: Type.String(),
+      type: Type.Enum(ZipTypeEnum),
+      children: Type.Optional(Type.Array(This)),
+      download: Type.Optional(Type.String()),
+    }),
+  { $id: "children" }
+);
+
+export const ZipGenerateBodySchema = Type.Object({
+  name: Type.String(),
+  children: Type.Array(ZipGenerateItemSchema),
+});
+
+export type ZipGenerateBody = Static<typeof ZipGenerateBodySchema>;
+export type ZipGenerateItem = Static<typeof ZipGenerateItemSchema>;

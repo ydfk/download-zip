@@ -1,18 +1,9 @@
-import { Type } from '@sinclair/typebox';
-import { FastifyPluginAsync } from 'fastify';
+import { FastifyInstance, FastifyPluginCallback } from "fastify";
+import { renderRoutes } from "./routers";
 
-const routes: FastifyPluginAsync = async (server) => {
-  server.get('/', {
-   schema: {
-      response: {
-        200: Type.Object({
-          hello: Type.String(),
-        }),
-      },
-    }, 
-  }, async function () {
-    return { hello: 'world' };
-  });
-}
-
-export default routes;
+export const router: FastifyPluginCallback = (fastify: FastifyInstance, opts, next) => {
+  for (const route of renderRoutes) {
+    fastify.route(route);
+  }
+  next();
+};
