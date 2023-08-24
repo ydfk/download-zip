@@ -3,22 +3,52 @@
  * @Author: ydfk
  * @Date: 2023-08-24 18:01:22
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-24 18:06:37
+ * @LastEditTime: 2023-08-24 21:55:17
  */
 import app from "../server";
 import * as fs from "fs";
+import * as path from "path";
 
-export const folderExistsOrCreate = (folderPath: string) => {
+const isFolderExists = async (folderPath: string): Promise<boolean> => {
+  try {
+    await fs.promises.access(folderPath);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+export const createFolderAsync = async (folderPath: string) => {
   try {
     // 判断文件夹是否存在
-    if (!fs.existsSync(folderPath)) {
+    if (!(await isFolderExists(folderPath))) {
       // 不存在则创建文件夹
-      fs.mkdirSync(folderPath, { recursive: true });
+      await fs.promises.mkdir(folderPath, { recursive: true });
       app.log.info(`Folder[${folderPath}] created successfully.`);
     } else {
       app.log.info(`Folder[${folderPath}] already exists.`);
     }
   } catch (error) {
     app.log.error("Error:", error);
+    throw new Error(`Folder[${folderPath}] create failed.`);
+  }
+};
+
+export const createFileAsync = async (filePath: string, content: string) => {
+  try {
+    // 使用 path 模块处理文件路径
+    const absolutePath = path.resolve(filePath);
+
+    // 使用 fs.promises 进行异步文件操作
+    if (await isFolderExists(absolutePath)) {
+      app.log.info(`File [${absolutePath}] already exists.`);
+      throw new Error(`File [${absolutePath}] already exists.`);
+    } else {
+      await fs.promises.writeFile(absolutePath, content);
+      app.log.info(`File [${absolutePath}] created.`);
+    }
+  } catch (error) {
+    app.log.error("An error occurred:", error);
+    throw new Error(`File [${filePath}] create failed. ${error}`);
   }
 };
