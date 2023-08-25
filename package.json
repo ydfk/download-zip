@@ -1,19 +1,18 @@
 {
   "name": "storage-service-zip",
-  "version": "0.0.1",
+  "version": "1.0.100",
   "type": "module",
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "check:types": "tsc --noEmit",
-    "build1": "esbuild `find src \\( -name '*.ts' \\)` --platform=node --outdir=build --resolve-extensions=.js",
-    "build": "tsc -p tsconfig.json",
+    "build": "rimraf build && vite build --outDir build --ssr src/index.ts",
+    "build:tsc": "rimraf build && tsc -p tsconfig.json",
     "start": "node build/index.js",
     "dev": "chcp 65001 && tsx watch src .env | pino-pretty --colorize",
-    "prepare": "husky install",
-    "cz": "git add . & czg",
     "dev:vite": "chcp 65001 && vite | pino-pretty --colorize",
-    "build:vite": "vite build --outDir build --ssr src/index.ts"
+    "prepare": "husky install",
+    "cz": "git add . & czg"
   },
   "engines": {
     "node": ">=16.0.0"

@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-25 15:35:48
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-25 15:57:13
+ * @LastEditTime: 2023-08-25 16:46:29
  */
 import { defineConfig } from "vite";
 import { VitePluginNode } from "vite-plugin-node";
@@ -14,10 +14,10 @@ const pathResolve = (dir: string) => {
 };
 
 export default defineConfig({
-  server: {
-    // vite server configs, for details see [vite doc](https://vitejs.dev/config/#server-host)
-    port: +(process.env.API_PORT || 3000),
-  },
+  // server: {
+  //   // vite server configs, for details see [vite doc](https://vitejs.dev/config/#server-host)
+  //   port: +(process.env.API_PORT || 3000),
+  // },
   build: {
     target: "esnext",
   },

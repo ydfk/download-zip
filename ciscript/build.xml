@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="ConsoleAnt" default="build" basedir=".">
+    <target name="replace">
+        <replaceregexp file="src/constant.ts" match="%BUILDNUMBER%" replace="${build.number}" />
+        <replaceregexp file="package.json" match="1.0.100" replace="${build.number}" />
+    </target>
+    <target name="install" depends="replace">
+        <exec executable="/bin/sh" failonerror="true">
+            <arg value="-c" />
+            <arg value="pnpm install" />
+        </exec>
+    </target>
+    <target name="lint" depends="install">
+        <exec executable="/bin/sh" failonerror="true">
+            <arg value="-c" />
+            <arg value="pnpm lint" />
+        </exec>
+    </target>
+    <target name="build" depends="lint">
+        <exec executable="/bin/sh" failonerror="true">
+            <arg value="-c" />
+            <arg value="pnpm build" />
+        </exec>
+    </target>
+</project>
