@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-24 12:48:19
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-25 12:37:54
+ * @LastEditTime: 2023-08-25 13:58:07
  */
 import { Type, Static } from "@sinclair/typebox";
 
@@ -28,10 +28,15 @@ export const ZipGenerateBodySchema = Type.Object({
   children: Type.Array(ZipGenerateItemSchema),
 });
 
+export const ZipGenerateQuerySchema = Type.Object({
+  regenerate: Type.Optional(Type.Boolean()),
+});
+
 export const ZipDownloadParamsSchema = Type.Object({
   hash: Type.String(),
 });
 
 export type ZipGenerateBody = Static<typeof ZipGenerateBodySchema>;
+export type ZipGenerateQuery = Static<typeof ZipGenerateQuerySchema>;
 export type ZipGenerateItem = Static<typeof ZipGenerateItemSchema>;
 export type ZipDownloadParams = Static<typeof ZipDownloadParamsSchema>;

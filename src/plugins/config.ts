@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-21 17:53:22
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-24 17:59:16
+ * @LastEditTime: 2023-08-25 14:13:35
  */
 import "dotenv/config";
 import fp from "fastify-plugin";
@@ -22,6 +22,7 @@ const ConfigSchema = Type.Strict(
     API_HOST: Type.String(),
     API_PORT: Type.String(),
     STORAGE_PATH: Type.String(),
+    ZIP_SUCCESS_DEL_FOLDER: Type.String(),
   })
 );
 

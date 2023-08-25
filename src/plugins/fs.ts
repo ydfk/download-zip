@@ -3,14 +3,15 @@
  * @Author: ydfk
  * @Date: 2023-08-24 18:01:22
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-25 12:26:30
+ * @LastEditTime: 2023-08-25 14:08:49
  */
 import app from "../server";
 import * as fs from "fs";
 import * as path from "path";
 import AdmZip from "adm-zip";
+import fetch from "node-fetch";
 
-const isFolderExists = async (folderPath: string): Promise<boolean> => {
+export const isFolderExists = async (folderPath: string): Promise<boolean> => {
   try {
     await fs.promises.access(folderPath);
     return true;
@@ -51,6 +52,32 @@ export const createFileAsync = async (filePath: string, content: string) => {
   } catch (error) {
     app.log.error("An error occurred:", error);
     throw new Error(`File [${filePath}] create failed. ${error}`);
+  }
+};
+
+export const downloadFileFromUrl = async (url: string, filePath: string) => {
+  try {
+    const response = await fetch(url);
+
+    if (response.ok) {
+      const fileStream = fs.createWriteStream(filePath);
+      await new Promise<void>((resolve, reject) => {
+        if (!response.body) {
+          reject(new Error("response body is null"));
+        } else {
+          response.body.pipe(fileStream);
+          fileStream.on("finish", resolve);
+          fileStream.on("error", reject);
+        }
+      });
+
+      app.log.info(`file [${filePath}] download successfully.`);
+    } else {
+      throw new Error(`HTTP statusCode: ${response.status}`);
+    }
+  } catch (error) {
+    app.log.error(`file [${filePath}] download failed.`, error);
+    throw new Error(`file [${filePath}] download failed. ${error}`);
   }
 };
 

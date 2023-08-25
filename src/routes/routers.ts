@@ -3,11 +3,11 @@
  * @Author: ydfk
  * @Date: 2023-08-21 17:53:22
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-25 12:38:09
+ * @LastEditTime: 2023-08-25 13:58:44
  */
 import { RouteOptions } from "fastify";
 import { generateZip, downloadZip } from "../controllers/zip.controller";
-import { ZipDownloadParamsSchema, ZipGenerateBodySchema } from "schemas/zip";
+import { ZipDownloadParamsSchema, ZipGenerateBodySchema, ZipGenerateQuerySchema } from "schemas/zip";
 
 export const renderRoutes: RouteOptions[] = [
   {
@@ -29,6 +29,7 @@ export const renderRoutes: RouteOptions[] = [
     url: "/zip/generate",
     schema: {
       body: ZipGenerateBodySchema,
+      querystring: ZipGenerateQuerySchema,
     },
     handler: generateZip,
   },

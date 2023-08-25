@@ -3,11 +3,11 @@
  * @Author: ydfk
  * @Date: 2023-08-24 10:09:27
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-25 13:24:38
+ * @LastEditTime: 2023-08-25 14:20:34
  */
 import { RouteHandlerMethod } from "fastify";
-import { ZipDownloadParams, ZipGenerateBody, ZipGenerateItem, ZipTypeEnum } from "../schemas/zip";
-import { createFileAsync, createFolderAsync, zipFolderAsync } from "plugins/fs";
+import { ZipDownloadParams, ZipGenerateBody, ZipGenerateQuery, ZipGenerateItem, ZipTypeEnum } from "../schemas/zip";
+import { isFolderExists, createFolderAsync, zipFolderAsync, downloadFileFromUrl } from "plugins/fs";
 import app from "server";
 import { validateGenerateBody } from "./validate";
 import { rimraf } from "rimraf";
@@ -16,6 +16,9 @@ import path from "path";
 import fs from "fs";
 
 export const generateZip: RouteHandlerMethod = async (request, reply) => {
+  request.log.info(request.query, "generateZip querystring");
+  const query = request.query as ZipGenerateQuery;
+
   request.log.info(request.body, "generateZip body");
   const body = request.body as ZipGenerateBody;
 
@@ -29,12 +32,21 @@ export const generateZip: RouteHandlerMethod = async (request, reply) => {
   request.log.info(`generateZip rootPath [${rootPath}}]`);
   const folderPath = `${rootPath}/${body.name}`;
 
-  await createOnDisk(body, rootPath);
-  request.log.info("generateZip createOnDisk success");
+  if ((await isFolderExists(folderPath)) && !query.regenerate) {
+    request.log.info(`generateZip rootPath [${rootPath}}] already exists.`);
+  } else {
+    await rimraf(rootPath);
 
-  await zipFolderAsync(folderPath, `${folderPath}.zip`);
-  request.log.info("generateZip zip success");
-  rimraf(`${folderPath}`);
+    await createOnDisk(body, rootPath);
+    request.log.info("generateZip createOnDisk success");
+
+    await zipFolderAsync(folderPath, `${folderPath}.zip`);
+    request.log.info("generateZip zip success");
+
+    request.log.info(app.config.ZIP_SUCCESS_DEL_FOLDER, "generateZip zip success ZIP_SUCCESS_DEL_FOLDER");
+    app.config.ZIP_SUCCESS_DEL_FOLDER === "true" && (await rimraf(`${folderPath}`));
+  }
+
   return reply.send({
     hash,
   });
@@ -68,7 +80,16 @@ const createItemOnDisk = async (zipGenerateItem: ZipGenerateItem, currentPath: s
   if (zipGenerateItem.type === ZipTypeEnum.FOLDER) {
     await createFolderAsync(path);
   } else if (zipGenerateItem.type === ZipTypeEnum.FILE) {
-    await createFileAsync(path, "123");
+    if (!zipGenerateItem.download) {
+      throw new Error(`file [${path}] download url is empty.`);
+    } else {
+      if (zipGenerateItem.download.toLowerCase().startsWith("http") || zipGenerateItem.download.toLowerCase().startsWith("ftp")) {
+        await downloadFileFromUrl(zipGenerateItem.download || "", path);
+      } else {
+        //TODO: 从文件中心下载
+      }
+    }
+
     parentPath = currentPath;
   }
 
@@ -81,7 +102,6 @@ const createItemOnDisk = async (zipGenerateItem: ZipGenerateItem, currentPath: s
 
 const createOnDisk = async (zipGenerate: ZipGenerateBody, rootPath: string) => {
   const folderPath = `${rootPath}/${zipGenerate.name}`;
-  await rimraf(folderPath);
   await createFolderAsync(folderPath);
   for (const zipGenerateItem of zipGenerate.children) {
     await createItemOnDisk(zipGenerateItem, folderPath);
