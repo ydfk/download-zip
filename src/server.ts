@@ -3,12 +3,12 @@
  * @Author: ydfk
  * @Date: 2023-08-21 17:53:22
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-24 16:34:42
+ * @LastEditTime: 2023-08-25 15:38:24
  */
 import fastify from "fastify";
 import config from "./plugins/config";
 import { router } from "./routes";
-import { IS_DEV } from "constant";
+import { IS_DEV } from "./constant";
 
 const logFileName = `./log/app-${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDay()}.log`;
 

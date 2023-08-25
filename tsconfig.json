@@ -12,8 +12,7 @@
     "skipLibCheck": true,
     "strict": true,
     "paths": {
-      "@/*": ["src/*"],
-      "#/*": ["types/*"]
+      "@/*": ["src/*"]
     }
   },
   "include": ["src/**/*.ts", "tests/**/*.ts"],

@@ -3,11 +3,11 @@
  * @Author: ydfk
  * @Date: 2023-08-24 21:30:27
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-24 21:30:45
+ * @LastEditTime: 2023-08-25 15:40:28
  */
 
-import { REGEX_FILE_NAME } from "constant";
-import { ZipGenerateBody, ZipGenerateItem, ZipTypeEnum } from "schemas/zip";
+import { REGEX_FILE_NAME } from "../constant";
+import { ZipGenerateBody, ZipGenerateItem, ZipTypeEnum } from "../schemas/zip";
 
 export const validateGenerateBody = (zipGenerateBody: ZipGenerateBody) => {
   validateName(zipGenerateBody.name, []);

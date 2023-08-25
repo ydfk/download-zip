@@ -6,10 +6,14 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "check:types": "tsc --noEmit",
-    "build": "esbuild `find src \\( -name '*.ts' \\)` --platform=node --outdir=build --resolve-extensions=.js",
+    "build1": "esbuild `find src \\( -name '*.ts' \\)` --platform=node --outdir=build --resolve-extensions=.js",
+    "build": "tsc -p tsconfig.json",
+    "start": "node build/index.js",
     "dev": "chcp 65001 && tsx watch src .env | pino-pretty --colorize",
     "prepare": "husky install",
-    "cz": "git add . & czg"
+    "cz": "git add . & czg",
+    "dev:vite": "chcp 65001 && vite | pino-pretty --colorize",
+    "build:vite": "vite build --outDir build --ssr src/index.ts"
   },
   "engines": {
     "node": ">=16.0.0"
@@ -40,6 +44,8 @@
     "pino-pretty": "^10.2.0",
     "prettier": "^3.0.2",
     "tsx": "^3.12.7",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "vite": "^4.4.9",
+    "vite-plugin-node": "^3.0.2"
   }
 }

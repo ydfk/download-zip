@@ -3,15 +3,15 @@
  * @Author: ydfk
  * @Date: 2023-08-24 10:09:27
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-25 14:20:34
+ * @LastEditTime: 2023-08-25 15:40:01
  */
 import { RouteHandlerMethod } from "fastify";
 import { ZipDownloadParams, ZipGenerateBody, ZipGenerateQuery, ZipGenerateItem, ZipTypeEnum } from "../schemas/zip";
-import { isFolderExists, createFolderAsync, zipFolderAsync, downloadFileFromUrl } from "plugins/fs";
-import app from "server";
+import { isFolderExists, createFolderAsync, zipFolderAsync, downloadFileFromUrl } from "../plugins/fs";
+import app from "../server";
 import { validateGenerateBody } from "./validate";
 import { rimraf } from "rimraf";
-import { generateMD5 } from "plugins/crypto";
+import { generateMD5 } from "../plugins/crypto";
 import path from "path";
 import fs from "fs";
 

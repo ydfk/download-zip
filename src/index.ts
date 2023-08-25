@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-21 17:53:22
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-24 13:29:56
+ * @LastEditTime: 2023-08-25 15:57:41
  */
 import server from "./server";
 
@@ -14,8 +14,9 @@ process.on("unhandledRejection", (err) => {
 
 const port = +server.config.API_PORT;
 const host = server.config.API_HOST;
-await server.listen({ host, port });
+server.listen({ host, port });
 server.log.info(`server running on ${host}:${port}/`);
+server.log.info(server.config.NODE_ENV, `server config`);
 
 for (const signal of ["SIGINT", "SIGTERM"]) {
   process.on(signal, () =>
@@ -25,3 +26,5 @@ for (const signal of ["SIGINT", "SIGTERM"]) {
     })
   );
 }
+
+export const viteNodeApp = server;
