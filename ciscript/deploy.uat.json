@@ -1,0 +1,8 @@
+{
+  "ssh": "root@47.93.22.19",
+  "port": "50225",
+  "deploy_dir": "/root/uat-storage/zip",
+  "backup_dir": "/root/bak-uat-storage/zip",
+  "release_name": "storage-service-zip",
+  "app_name": "uat-storage-service-zip"
+}
