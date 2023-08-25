@@ -3,11 +3,12 @@
  * @Author: ydfk
  * @Date: 2023-08-24 18:01:22
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-24 21:55:17
+ * @LastEditTime: 2023-08-25 12:26:30
  */
 import app from "../server";
 import * as fs from "fs";
 import * as path from "path";
+import AdmZip from "adm-zip";
 
 const isFolderExists = async (folderPath: string): Promise<boolean> => {
   try {
@@ -50,5 +51,34 @@ export const createFileAsync = async (filePath: string, content: string) => {
   } catch (error) {
     app.log.error("An error occurred:", error);
     throw new Error(`File [${filePath}] create failed. ${error}`);
+  }
+};
+
+// 异步递归添加目录内容到ZIP
+const addFolderToZipAsync = async (zip: AdmZip, folderPath: string, parentPath: string = "") => {
+  const files = await fs.promises.readdir(folderPath);
+
+  for (const file of files) {
+    const filePath = path.join(folderPath, file);
+    const relativePath = parentPath ? path.join(parentPath, file) : file;
+
+    const fileStats = await fs.promises.stat(filePath);
+    if (fileStats.isDirectory()) {
+      await addFolderToZipAsync(zip, filePath, relativePath);
+    } else {
+      zip.addLocalFile(filePath, parentPath);
+    }
+  }
+};
+
+export const zipFolderAsync = async (sourcePath: string, zipFilePath: string) => {
+  try {
+    const zip = new AdmZip();
+    await addFolderToZipAsync(zip, sourcePath);
+    zip.writeZip(zipFilePath);
+    app.log.info("directory [${sourcePath}] zip successfully.");
+  } catch (error) {
+    app.log.error("Error zip directory:", error);
+    throw new Error(`directory [${sourcePath}] zip failed. ${error}`);
   }
 };
