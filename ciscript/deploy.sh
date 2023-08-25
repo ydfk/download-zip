@@ -14,6 +14,8 @@ echo "DEPLOY_DIR => $DEPLOY_DIR"
 echo "BACKUP_DIR => $BACKUP_DIR"
 echo "RELEASE_NAME => $RELEASE_NAME"
 echo "APP_NAME => $APP_NAME"
+echo "BUILD_VERSION => $BUILD_VERSION"
+echo "BUILD_DIR => $BUILD_DIR"
 
 echo '清空备份目录(只保留上一个备份)';
 echo "ssh -p $PORT $SSH 'rm -rf $BACKUP_DIR'";

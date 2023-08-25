@@ -5,7 +5,7 @@
 	<target name="deploy">
 		<exec executable="/bin/sh" failonerror="true">
 			<arg value="-c" />
-			<arg value="bash deploy.sh '${configurationName}' '${teamcity.build.checkoutDir}'" />
+			<arg value="bash deploy.sh '${configurationName}' '${teamcity.build.checkoutDir}' '${teamcity.build.checkoutDir}'" />
 		</exec>
 	</target>
 </project>
