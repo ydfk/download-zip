@@ -2,14 +2,14 @@ ENV_KEY=$1;
 BUILD_VERSION=$2;
 BUILD_DIR=$3;
 
-RELEASE_NAME=$(cat deploy.$ENV_KEY.json | jq ".release_name" | sed 's/\"//g');
-APP_NAME=$(cat deploy.$ENV_KEY.json | jq ".app_name" | sed 's/\"//g');
+RELEASE_NAME=$(cat buildDocker.$ENV_KEY.json | jq ".release_name" | sed 's/\"//g');
+APP_NAME=$(cat buildDocker.$ENV_KEY.json | jq ".app_name" | sed 's/\"//g');
 
-IS_DEPLOY=$(cat deploy.$ENV_KEY.json | jq ".isDeploy" | sed 's/\"//g');
-DEPLOY_SSH=$(cat deploy.$ENV_KEY.json | jq ".deploy_ssh" | sed 's/\"//g');
-DEPLOY_PORT=$(cat deploy.$ENV_KEY.json | jq ".deploy_port" | sed 's/\"//g');
-DEPLOY_DIR=$(cat deploy.$ENV_KEY.json | jq ".deploy_dir" | sed 's/\"//g');
-DEPLOY_BACKUP_DIR=$(cat deploy.$ENV_KEY.json | jq ".deploy_backup_dir" | sed 's/\"//g');
+IS_DEPLOY=$(cat buildDocker.$ENV_KEY.json | jq ".isDeploy" | sed 's/\"//g');
+DEPLOY_SSH=$(cat buildDocker.$ENV_KEY.json | jq ".deploy_ssh" | sed 's/\"//g');
+DEPLOY_PORT=$(cat buildDocker.$ENV_KEY.json | jq ".deploy_port" | sed 's/\"//g');
+DEPLOY_DIR=$(cat buildDocker.$ENV_KEY.json | jq ".deploy_dir" | sed 's/\"//g');
+DEPLOY_BACKUP_DIR=$(cat buildDocker.$ENV_KEY.json | jq ".deploy_backup_dir" | sed 's/\"//g');
 
 DATE=$(date +%Y%m%d%H%M%S);
 echo "ENV_KEY => $ENV_KEY"
