@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="ConsoleAnt" default="publish" basedir=".">
+<project name="ConsoleAnt" default="build" basedir=".">
 	<echo message="configurationName is ${configurationName}"/>
 	<echo message="checkoutDir is ${teamcity.build.checkoutDir}"/>
-    <echo message="DepBuildNumber is ${DepBuildNumber}"/>
     <echo message="buildNumber is ${build.number}"/>
     <target name="replace">
         <replaceregexp file="src/constant.ts" match="%BUILDNUMBER%" replace="${build.number}" />
