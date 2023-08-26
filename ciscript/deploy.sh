@@ -52,8 +52,8 @@ echo "ssh -p $PORT $SSH 'unzip -o $DEPLOY_DIR/$RELEASE_NAME.zip -d $DEPLOY_DIR'"
 ssh -p $PORT $SSH "unzip -o '$DEPLOY_DIR/$RELEASE_NAME.zip' -d '$DEPLOY_DIR'";
 
 echo '运行install';
-echo "ssh -p $PORT $SSH 'cd $DEPLOY_DIR && pnpm install'";
-ssh -p $PORT $SSH "cd '$DEPLOY_DIR' && pnpm install"
+echo "ssh -p $PORT $SSH 'cd $DEPLOY_DIR && pnpm install -P --ignore-scripts'";
+ssh -p $PORT $SSH "cd '$DEPLOY_DIR' && pnpm install -P --ignore-scripts"
 
 echo '进入根目录启动服务';
 echo "ssh -p $PORT $SSH 'pm2 restart $APP_NAME'";

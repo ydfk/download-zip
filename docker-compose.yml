@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  storage-service-zip:
+    build:
+      context: ./
+    ports:
+      - "23820:23820"
+    env_file:
+      - .env
