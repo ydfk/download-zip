@@ -28,6 +28,8 @@ echo "pnpm -v";
 pnpm -v;
 echo "pnpm install";
 pnpm install;
+echo "pnpm lint";
+pnpm lint;
 echo "pnpm build";
 pnpm build;
 echo "pnpm prune --prod";

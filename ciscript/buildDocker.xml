@@ -7,13 +7,7 @@
         <replaceregexp file="src/constant.ts" match="%BUILDNUMBER%" replace="${build.number}" />
         <replaceregexp file="package.json" match="1.0.100" replace="${build.number}" />
     </target>
-    <target name="lint" depends="replace">
-        <exec executable="/bin/sh" failonerror="true">
-            <arg value="-c" />
-            <arg value="pnpm lint" />
-        </exec>
-    </target>
-    <target name="build" depends="lint">
+    <target name="build" depends="replace">
         <exec executable="/bin/sh" failonerror="true">
             <arg value="-c" />
             <arg value="bash buildDocker.sh '${configurationName}' '${teamcity.build.number}' '${teamcity.build.checkoutDir}'" />
