@@ -8,6 +8,6 @@ services:
       - "23820:23820"
     volumes:
       - ./log:/log
-      - /home/tzxx/dev_storage:/storage
+      - ./storage:/storage
     environment:
       - ZIP_SUCCESS_DEL_FOLDER=false
