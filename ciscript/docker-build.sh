@@ -48,12 +48,12 @@ echo "docker save -o '$RELEASE_NAME-$BUILD_VERSION-docker.tar' '$RELEASE_NAME:la
 docker save -o $RELEASE_NAME-$BUILD_VERSION-docker.tar $RELEASE_NAME:latest
 
 echo "replace docker-compose.yml"
-echo "sed -i 's/container_name-$RELEASE_NAME/$APP_NAME/g' docker-compose.yml";
-sed -i "s/container_name-$RELEASE_NAME/$APP_NAME/g" docker-compose.yml
+echo "sed -i 's/container_name-$RELEASE_NAME/$APP_NAME/g' docker-compose.example.yml";
+sed -i "s/container_name-$RELEASE_NAME/$APP_NAME/g" docker-compose.example.yml
 
 echo "build docker zip"
-echo "zip -r '$RELEASE_NAME-$BUILD_VERSION-docker.zip' .env.example '$RELEASE_NAME-$BUILD_VERSION-docker.tar' docker-compose.yml";
-zip -r $RELEASE_NAME-$BUILD_VERSION-docker.zip .env.example $RELEASE_NAME-$BUILD_VERSION-docker.tar docker-compose.yml
+echo "zip -r '$RELEASE_NAME-$BUILD_VERSION-docker.zip' '$RELEASE_NAME-$BUILD_VERSION-docker.tar' docker-compose.example.yml";
+zip -r $RELEASE_NAME-$BUILD_VERSION-docker.zip $RELEASE_NAME-$BUILD_VERSION-docker.tar docker-compose.example.yml
 
 # echo "build zip"
 # echo "zip -r '$RELEASE_NAME-$BUILD_VERSION.zip' .env.example package.json build node_modules";
@@ -95,6 +95,8 @@ echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'unzip -o $DEPLOY_DIR/$RELEASE_NAME-$BUILD
 ssh -p $DEPLOY_PORT $DEPLOY_SSH "unzip -o '$DEPLOY_DIR/$RELEASE_NAME-$BUILD_VERSION-docker.zip' -d '$DEPLOY_DIR'";
 
 echo '启动服务';
+echo "docker images|grep $RELEASE_NAME|awk '{print $3}'|xargs docker rmi";
+docker images|grep $RELEASE_NAME|awk '{print $3}'|xargs docker rmi
 echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'docker load -i $DEPLOY_DIR/$RELEASE_NAME-$BUILD_VERSION-docker.tar'";
 ssh -p $DEPLOY_PORT $DEPLOY_SSH "docker load -i '$DEPLOY_DIR/$RELEASE_NAME-$BUILD_VERSION-docker.tar'";
 echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'docker-compose -f $DEPLOY_DIR/docker-compose.yml up -d --remove-orphans'";

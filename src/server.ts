@@ -3,13 +3,14 @@
  * @Author: ydfk
  * @Date: 2023-08-21 17:53:22
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-27 15:31:05
+ * @LastEditTime: 2023-08-27 20:47:30
  */
 import fastify from "fastify";
 import config from "./plugins/config";
 import { router } from "./routes";
 import { IS_DEV } from "./constant";
 import { existsSync, mkdirSync } from "fs";
+import { getNowDayStr } from "plugins/date";
 
 const getLoggerFile = () => {
   if (!IS_DEV) {
@@ -19,7 +20,7 @@ const getLoggerFile = () => {
       mkdirSync(logPath);
     }
 
-    return `${logPath}/app-${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDay()}.log`;
+    return `${logPath}/app-${getNowDayStr()}.log`;
   }
 };
 

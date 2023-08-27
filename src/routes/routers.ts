@@ -3,18 +3,19 @@
  * @Author: ydfk
  * @Date: 2023-08-21 17:53:22
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-25 15:39:48
+ * @LastEditTime: 2023-08-27 21:03:56
  */
 import { RouteOptions } from "fastify";
 import { generateZip, downloadZip } from "../controllers/zip.controller";
 import { ZipDownloadParamsSchema, ZipGenerateBodySchema, ZipGenerateQuerySchema } from "../schemas/zip";
+import { BUILD_NUMBER } from "constant";
 
 export const renderRoutes: RouteOptions[] = [
   {
     method: "GET",
     url: "/",
     handler: () => {
-      return "service is running";
+      return `service is running on version: ${BUILD_NUMBER}`;
     },
   },
   {
