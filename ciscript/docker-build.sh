@@ -97,6 +97,6 @@ ssh -p $DEPLOY_PORT $DEPLOY_SSH "unzip -o '$DEPLOY_DIR/$RELEASE_NAME-$BUILD_VERS
 echo '启动服务';
 echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'docker load -i $DEPLOY_DIR/$RELEASE_NAME-$BUILD_VERSION-docker.tar'";
 ssh -p $DEPLOY_PORT $DEPLOY_SSH "docker load -i '$DEPLOY_DIR/$RELEASE_NAME-$BUILD_VERSION-docker.tar'";
-echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'docker-compose -f $DEPLOY_DIR/docker-compose.yml up -d'";
-ssh -p $DEPLOY_PORT $DEPLOY_SSH "docker-compose -f '$DEPLOY_DIR/docker-compose.yml' up -d";
+echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'docker-compose -f $DEPLOY_DIR/docker-compose.yml up -d --remove-orphans'";
+ssh -p $DEPLOY_PORT $DEPLOY_SSH "docker-compose -f '$DEPLOY_DIR/docker-compose.yml' up -d --remove-orphans";
 
