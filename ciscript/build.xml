@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="ConsoleAnt" default="build" basedir=".">
+<project name="ConsoleAnt" default="zip" basedir=".">
     <target name="replace">
         <replaceregexp file="src/constant.ts" match="%BUILDNUMBER%" replace="${build.number}" />
         <replaceregexp file="package.json" match="1.0.100" replace="${build.number}" />
@@ -20,6 +20,18 @@
         <exec executable="/bin/sh" failonerror="true">
             <arg value="-c" />
             <arg value="pnpm build" />
+        </exec>
+    </target>
+    <target name="prune" depends="build">
+        <exec executable="/bin/sh" failonerror="true">
+            <arg value="-c" />
+            <arg value="pnpm prune --prod" />
+        </exec>
+    </target>
+    <target name="zip" depends="prune">
+        <exec executable="/bin/sh" failonerror="true">
+            <arg value="-c" />
+            <arg value="zip -r storage-service-zip-${build.number}.zip .env package.json build node_modules" />
         </exec>
     </target>
 </project>

@@ -23,17 +23,6 @@ echo "DEPLOY_PORT => $DEPLOY_PORT"
 echo "DEPLOY_DIR => $DEPLOY_DIR"
 echo "DEPLOY_BACKUP_DIR => $DEPLOY_BACKUP_DIR"
 
-echo "build nodejs"
-echo "pnpm -v";
-pnpm -v;
-echo "pnpm install";
-pnpm install;
-echo "pnpm lint";
-pnpm lint;
-echo "pnpm build";
-pnpm build;
-echo "pnpm prune --prod";
-pnpm prune --prod;
 
 echo "build docker"
 echo "docker images|grep $RELEASE_NAME|awk '{print $3}'|xargs docker rmi";
@@ -54,10 +43,6 @@ sed -i "s/container_name-$RELEASE_NAME/$APP_NAME/g" docker-compose.example.yml
 echo "build docker zip"
 echo "zip -r '$RELEASE_NAME-$BUILD_VERSION-docker.zip' '$RELEASE_NAME-$BUILD_VERSION-docker.tar' docker-compose.example.yml";
 zip -r $RELEASE_NAME-$BUILD_VERSION-docker.zip $RELEASE_NAME-$BUILD_VERSION-docker.tar docker-compose.example.yml
-
-# echo "build zip"
-# echo "zip -r '$RELEASE_NAME-$BUILD_VERSION.zip' .env.example package.json build node_modules";
-# zip -r $RELEASE_NAME-$BUILD_VERSION.zip .env.example package.json build node_modules
 
 # IF [ $IS_DEPLOY = false ]; THEN
 #     echo "不部署";
