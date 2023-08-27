@@ -59,10 +59,10 @@ zip -r $RELEASE_NAME-$BUILD_VERSION-docker.zip .env.example $RELEASE_NAME-$BUILD
 # echo "zip -r '$RELEASE_NAME-$BUILD_VERSION.zip' .env.example package.json build node_modules";
 # zip -r $RELEASE_NAME-$BUILD_VERSION.zip .env.example package.json build node_modules
 
-IF [ $IS_DEPLOY = false ]; THEN
-    echo "不部署";
-    exit 0;
-fi
+# IF [ $IS_DEPLOY = false ]; THEN
+#     echo "不部署";
+#     exit 0;
+# fi
 
 echo '清空备份目录(只保留上一个备份)';
 echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'rm -rf $DEPLOY_BACKUP_DIR'";
