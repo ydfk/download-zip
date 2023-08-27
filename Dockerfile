@@ -10,4 +10,5 @@ COPY node_modules ./node_modules
 EXPOSE 23820
 USER node
 ENV NODE_ENV="production"
+USER root
 CMD ["npm", "start"]
