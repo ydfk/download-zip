@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-21 17:53:22
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-27 21:03:22
+ * @LastEditTime: 2023-08-27 21:06:16
  */
 import server from "./server";
 
@@ -16,7 +16,7 @@ const port = +server.config.API_PORT;
 const host = server.config.API_HOST;
 server.listen({ host, port });
 server.log.info(`server running on ${host}:${port}/`);
-server.log.info(server.config, `server config`);
+server.log.info(server.config.NODE_ENV, `server config NODE_ENV`);
 
 for (const signal of ["SIGINT", "SIGTERM"]) {
   process.on(signal, () =>
