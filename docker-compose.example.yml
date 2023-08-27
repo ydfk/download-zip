@@ -6,5 +6,8 @@ services:
     container_name: container_name-storage-service-zip
     ports:
       - "23820:23820"
-    env_file:
-      - .env
+    volumes:
+      - ./log:/log
+      - /home/tzxx/dev_storage:/storage
+    environment:
+      - ZIP_SUCCESS_DEL_FOLDER=false
