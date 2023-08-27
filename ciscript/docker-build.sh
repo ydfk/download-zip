@@ -50,14 +50,14 @@ echo "sed -i 's/$RELEASE_NAME/$APP_NAME/g' docker-compose.yml";
 sed -i "s/$RELEASE_NAME/$APP_NAME/g" docker-compose.yml
 
 echo "build docker zip"
-echo "zip -r '$RELEASE_NAME-$BUILD_VERSION-Docker.zip' .env.example '$RELEASE_NAME-$BUILD_VERSION.tar' docker-compose.yml";
-zip -r $RELEASE_NAME-$BUILD_VERSION-Docker.zip .env.example $RELEASE_NAME-$BUILD_VERSION.tar docker-compose.yml
+echo "zip -r '$RELEASE_NAME-$BUILD_VERSION-docker.zip' .env.example '$RELEASE_NAME-$BUILD_VERSION.tar' docker-compose.yml";
+zip -r $RELEASE_NAME-$BUILD_VERSION-docker.zip .env.example $RELEASE_NAME-$BUILD_VERSION.tar docker-compose.yml
 
 echo "build zip"
 echo "zip -r '$RELEASE_NAME-$BUILD_VERSION.zip' .env.example package.json build node_modules";
 zip -r $RELEASE_NAME-$BUILD_VERSION.zip .env.example package.json build node_modules
 
-IF [ $IS_DEPLOY = false ]; THEN
+IF [ $IS_DEPLOY = "false" ]; THEN
     echo "deploy is false, exit";
     exit 0;
 fi
@@ -85,12 +85,12 @@ echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'rm -rf $DEPLOY_DIR/*.tar'";
 ssh -p $DEPLOY_PORT $DEPLOY_SSH "rm -rf '$DEPLOY_DIR/*.tar'";
 
 echo '拷贝文件到服务器';
-echo "scp -P $DEPLOY_PORT -r '$BUILD_DIR/$RELEASE_NAME-$BUILD_VERSION-Docker.zip' $DEPLOY_SSH:$DEPLOY_DIR";
-scp -P $DEPLOY_PORT -r "$BUILD_DIR/$RELEASE_NAME-$BUILD_VERSION-Docker.zip" $DEPLOY_SSH:$DEPLOY_DIR
+echo "scp -P $DEPLOY_PORT -r '$BUILD_DIR/$RELEASE_NAME-$BUILD_VERSION-docker.zip' $DEPLOY_SSH:$DEPLOY_DIR";
+scp -P $DEPLOY_PORT -r "$BUILD_DIR/$RELEASE_NAME-$BUILD_VERSION-docker.zip" $DEPLOY_SSH:$DEPLOY_DIR
 
 echo '解压缩';
-echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'unzip -o $DEPLOY_DIR/$RELEASE_NAME-$BUILD_VERSION-Docker.zip -d $DEPLOY_DIR'";
-ssh -p $DEPLOY_PORT $DEPLOY_SSH "unzip -o '$DEPLOY_DIR/$RELEASE_NAME-$BUILD_VERSION-Docker.zip' -d '$DEPLOY_DIR'";
+echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'unzip -o $DEPLOY_DIR/$RELEASE_NAME-$BUILD_VERSION-docker.zip -d $DEPLOY_DIR'";
+ssh -p $DEPLOY_PORT $DEPLOY_SSH "unzip -o '$DEPLOY_DIR/$RELEASE_NAME-$BUILD_VERSION-docker.zip' -d '$DEPLOY_DIR'";
 
 echo '启动服务';
 echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'docker-compose -f $DEPLOY_DIR/docker-compose.yml up -d'";

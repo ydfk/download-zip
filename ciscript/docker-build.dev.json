@@ -1,7 +1,7 @@
 {
   "release_name": "storage-service-zip",
   "app_name": "dev-storage-service-zip",
-  "isDeploy": true,
+  "isDeploy": "true",
   "deploy_ssh": "root@172.16.226.133",
   "deploy_port": "22",
   "deploy_dir": "/home/tzxx/dev_storage/zip",
