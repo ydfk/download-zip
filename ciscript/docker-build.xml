@@ -10,7 +10,7 @@
     <target name="build" depends="replace">
         <exec executable="/bin/sh" failonerror="true">
             <arg value="-c" />
-            <arg value="bash buildDocker.sh '${configurationName}' '${build.number}' '${teamcity.build.checkoutDir}'" />
+            <arg value="bash docker-build.sh '${configurationName}' '${build.number}' '${teamcity.build.checkoutDir}'" />
         </exec>
     </target>
 </project>
