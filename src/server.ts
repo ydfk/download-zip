@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-21 17:53:22
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-25 16:38:35
+ * @LastEditTime: 2023-08-27 15:31:05
  */
 import fastify from "fastify";
 import config from "./plugins/config";
@@ -13,7 +13,7 @@ import { existsSync, mkdirSync } from "fs";
 
 const getLoggerFile = () => {
   if (!IS_DEV) {
-    const logPath = "./log";
+    const logPath = process.env.LOG_PATH || "./log";
 
     if (!existsSync(logPath)) {
       mkdirSync(logPath);
