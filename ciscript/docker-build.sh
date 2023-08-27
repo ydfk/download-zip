@@ -53,12 +53,12 @@ echo "build docker zip"
 echo "zip -r '$RELEASE_NAME-$BUILD_VERSION-docker.zip' .env.example '$RELEASE_NAME-$BUILD_VERSION.tar' docker-compose.yml";
 zip -r $RELEASE_NAME-$BUILD_VERSION-docker.zip .env.example $RELEASE_NAME-$BUILD_VERSION.tar docker-compose.yml
 
-echo "build zip"
-echo "zip -r '$RELEASE_NAME-$BUILD_VERSION.zip' .env.example package.json build node_modules";
-zip -r $RELEASE_NAME-$BUILD_VERSION.zip .env.example package.json build node_modules
+# echo "build zip"
+# echo "zip -r '$RELEASE_NAME-$BUILD_VERSION.zip' .env.example package.json build node_modules";
+# zip -r $RELEASE_NAME-$BUILD_VERSION.zip .env.example package.json build node_modules
 
-IF [ $IS_DEPLOY = "false" ]; THEN
-    echo "deploy is false, exit";
+IF [ "$IS_DEPLOY" = "false" ];
+    echo "不部署";
     exit 0;
 fi
 
