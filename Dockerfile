@@ -1,8 +1,6 @@
 FROM node:18-alpine AS runner
 USER root
-WORKDIR /app
-# RUN mkdir -p ./log
-# RUN mkdir -p ./storage
+WORKDIR /
 VOLUME /log
 VOLUME /storage
 
