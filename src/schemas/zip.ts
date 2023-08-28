@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-24 12:48:19
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-25 13:58:07
+ * @LastEditTime: 2023-08-28 18:25:10
  */
 import { Type, Static } from "@sinclair/typebox";
 
@@ -33,7 +33,7 @@ export const ZipGenerateQuerySchema = Type.Object({
 });
 
 export const ZipDownloadParamsSchema = Type.Object({
-  hash: Type.String(),
+  encrypt: Type.String(),
 });
 
 export type ZipGenerateBody = Static<typeof ZipGenerateBodySchema>;

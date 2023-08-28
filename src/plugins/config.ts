@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-21 17:53:22
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-28 12:53:13
+ * @LastEditTime: 2023-08-28 17:33:16
  */
 import "dotenv/config";
 import fp from "fastify-plugin";
@@ -21,8 +21,10 @@ const ConfigSchema = Type.Strict(
     NODE_ENV: Type.Enum(NodeEnv),
     API_HOST: Type.String(),
     API_PORT: Type.String(),
+    API_URL: Type.String(),
     STORAGE_PATH: Type.String(),
     LOG_PATH: Type.String(),
+    ZIP_DOWNLOAD_EXPIRE: Type.String(),
     ZIP_SUCCESS_DEL_FOLDER: Type.String(),
     ZIP_MAX_DEPTH: Type.String(),
     FSC_BASE_URL: Type.String(),
