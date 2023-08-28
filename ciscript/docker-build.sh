@@ -63,9 +63,9 @@ ssh -p $DEPLOY_PORT $DEPLOY_SSH "cp -R '$DEPLOY_DIR' '$DEPLOY_BACKUP_DIR/$DATE'"
 
 echo '清空部署目录内旧文件';
 echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'rm -rf $DEPLOY_DIR/*.zip'";
-ssh -p $DEPLOY_PORT $DEPLOY_SSH "rm -rf '$DEPLOY_DIR/*.zip'";
+ssh -p $DEPLOY_PORT $DEPLOY_SSH "rm -rf $DEPLOY_DIR/*.zip";
 echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'rm -rf $DEPLOY_DIR/*.tar'";
-ssh -p $DEPLOY_PORT $DEPLOY_SSH "rm -rf '$DEPLOY_DIR/*.tar'";
+ssh -p $DEPLOY_PORT $DEPLOY_SSH "rm -rf $DEPLOY_DIR/*.tar";
 
 echo '停止服务';
 echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'docker-compose -f $DEPLOY_DIR/docker-compose.yml down'";
@@ -80,8 +80,10 @@ echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'unzip -o $DEPLOY_DIR/$RELEASE_NAME-$BUILD
 ssh -p $DEPLOY_PORT $DEPLOY_SSH "unzip -o '$DEPLOY_DIR/$RELEASE_NAME-$BUILD_VERSION-docker.zip' -d '$DEPLOY_DIR'";
 
 echo '启动服务';
-echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'docker images|grep $RELEASE_NAME|awk '{print $3}'|xargs docker rmi -f'";
-ssh -p $DEPLOY_PORT $DEPLOY_SSH "docker images|grep $RELEASE_NAME|awk '{print $3}'|xargs docker rmi -f"
+# echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'docker images|grep $RELEASE_NAME|awk '{print $3}'|xargs docker rmi -f'";
+# ssh -p $DEPLOY_PORT $DEPLOY_SSH "docker images|grep $RELEASE_NAME|awk '{print $3}'|xargs docker rmi -f"
+echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'docker rmi $RELEASE_NAME'";
+ssh -p $DEPLOY_PORT $DEPLOY_SSH "docker rmi $RELEASE_NAME";
 echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'docker load -i $DEPLOY_DIR/$RELEASE_NAME-$BUILD_VERSION-docker.tar'";
 ssh -p $DEPLOY_PORT $DEPLOY_SSH "docker load -i '$DEPLOY_DIR/$RELEASE_NAME-$BUILD_VERSION-docker.tar'";
 echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'docker-compose -f $DEPLOY_DIR/docker-compose.yml up -d --remove-orphans'";
