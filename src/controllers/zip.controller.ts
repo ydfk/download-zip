@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-24 10:09:27
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-28 11:13:01
+ * @LastEditTime: 2023-08-28 13:00:05
  */
 import { RouteHandlerMethod } from "fastify";
 import { ZipDownloadParams, ZipGenerateBody, ZipGenerateQuery, ZipGenerateItem, ZipTypeEnum } from "../schemas/zip";
@@ -14,7 +14,7 @@ import { rimraf } from "rimraf";
 import { generateMD5 } from "../utils/crypto";
 import path from "path";
 import fs from "fs";
-import { getFileServiceCenterDownloadUrl } from "utils/fileCenter";
+import { getFileServiceCenterDownloadUrl } from "../utils/fileCenter";
 
 export const generateZip: RouteHandlerMethod = async (request, reply) => {
   request.log.info(request.query, "generateZip querystring");
