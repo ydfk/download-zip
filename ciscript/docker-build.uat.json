@@ -1,0 +1,9 @@
+{
+  "release_name": "storage-service-zip",
+  "app_name": "uat-storage-service-zip",
+  "isDeploy": "true",
+  "deploy_ssh": "root@",
+  "deploy_port": "22",
+  "deploy_dir": "/home/tzxx/dev_storage/zip",
+  "deploy_backup_dir": "/home/tzxx/bak_dev_storage/zip"
+}
