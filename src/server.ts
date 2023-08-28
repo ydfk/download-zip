@@ -3,14 +3,14 @@
  * @Author: ydfk
  * @Date: 2023-08-21 17:53:22
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-27 21:12:54
+ * @LastEditTime: 2023-08-28 10:41:33
  */
 import fastify from "fastify";
 import config from "./plugins/config";
 import { router } from "./routes";
 import { IS_DEV } from "./constant";
 import { existsSync, mkdirSync } from "fs";
-import { getNowDayStr } from "./plugins/date";
+import { getNowDayStr } from "./utils/date";
 
 const getLoggerFile = () => {
   if (!IS_DEV) {

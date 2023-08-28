@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-24 21:30:27
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-25 15:40:28
+ * @LastEditTime: 2023-08-28 12:53:35
  */
 
 import { REGEX_FILE_NAME } from "../constant";
@@ -16,8 +16,8 @@ export const validateGenerateBody = (zipGenerateBody: ZipGenerateBody) => {
   }
 
   const depth = getChildrenDepth(zipGenerateBody);
-  if (depth > 20) {
-    throw new Error(`文件夹最大深度不能超过20层 depth [${depth}]`);
+  if (depth > Number(process.env.ZIP_MAX_DEPTH || 10)) {
+    throw new Error(`文件夹最大深度不能超过${process.env.ZIP_MAX_DEPTH || 10}层 depth [${depth}]`);
   }
 
   for (const child of zipGenerateBody.children) {

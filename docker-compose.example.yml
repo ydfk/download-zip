@@ -11,3 +11,6 @@ services:
       - ./storage:/storage
     environment:
       - ZIP_SUCCESS_DEL_FOLDER=false
+      - ZIP_MAX_DEPTH=10
+      - FSC_BASE_URL=https://fileuat.baigongyi.com
+      - FSC_ACCESS_KEY=access_key

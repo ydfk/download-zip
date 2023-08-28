@@ -3,17 +3,18 @@
  * @Author: ydfk
  * @Date: 2023-08-24 10:09:27
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-25 15:40:01
+ * @LastEditTime: 2023-08-28 11:13:01
  */
 import { RouteHandlerMethod } from "fastify";
 import { ZipDownloadParams, ZipGenerateBody, ZipGenerateQuery, ZipGenerateItem, ZipTypeEnum } from "../schemas/zip";
-import { isFolderExists, createFolderAsync, zipFolderAsync, downloadFileFromUrl } from "../plugins/fs";
+import { isFolderExists, createFolderAsync, zipFolderAsync, downloadFileFromUrl } from "../utils/fs";
 import app from "../server";
 import { validateGenerateBody } from "./validate";
 import { rimraf } from "rimraf";
-import { generateMD5 } from "../plugins/crypto";
+import { generateMD5 } from "../utils/crypto";
 import path from "path";
 import fs from "fs";
+import { getFileServiceCenterDownloadUrl } from "utils/fileCenter";
 
 export const generateZip: RouteHandlerMethod = async (request, reply) => {
   request.log.info(request.query, "generateZip querystring");
@@ -86,7 +87,13 @@ const createItemOnDisk = async (zipGenerateItem: ZipGenerateItem, currentPath: s
       if (zipGenerateItem.download.toLowerCase().startsWith("http") || zipGenerateItem.download.toLowerCase().startsWith("ftp")) {
         await downloadFileFromUrl(zipGenerateItem.download || "", path);
       } else {
-        //TODO: 从文件中心下载
+        app.log.info(`file [${path}] download [${zipGenerateItem.download}] from fileCenter`);
+        const url = await getFileServiceCenterDownloadUrl(Number(zipGenerateItem.download));
+        if (url) {
+          await downloadFileFromUrl(url, path);
+        } else {
+          throw new Error(`file [${path}] download from fileCenter error.`);
+        }
       }
     }
 
