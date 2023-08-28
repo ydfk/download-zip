@@ -33,16 +33,16 @@ echo "docker tag '$RELEASE_NAME:$BUILD_VERSION' '$RELEASE_NAME:latest'";
 docker tag $RELEASE_NAME:$BUILD_VERSION $RELEASE_NAME:latest
 
 echo "save docker"
-echo "docker save -o '$RELEASE_NAME-$BUILD_VERSION-docker.tar' '$RELEASE_NAME:latest'";
-docker save -o $RELEASE_NAME-$BUILD_VERSION-docker.tar $RELEASE_NAME:latest
+echo "docker save '$RELEASE_NAME:latest' | gzip > $RELEASE_NAME-$BUILD_VERSION-docker.tar.gz'";
+docker save $RELEASE_NAME:latest | gzip > $RELEASE_NAME-$BUILD_VERSION-docker.tar.gz
 
 echo "replace docker-compose.yml"
 echo "sed -i 's/container_name-$RELEASE_NAME/$APP_NAME/g' docker-compose.example.yml";
 sed -i "s/container_name-$RELEASE_NAME/$APP_NAME/g" docker-compose.example.yml
 
 echo "build docker zip"
-echo "zip -r '$RELEASE_NAME-$BUILD_VERSION-docker.zip' '$RELEASE_NAME-$BUILD_VERSION-docker.tar' docker-compose.example.yml";
-zip -r $RELEASE_NAME-$BUILD_VERSION-docker.zip $RELEASE_NAME-$BUILD_VERSION-docker.tar docker-compose.example.yml
+echo "zip -r '$RELEASE_NAME-$BUILD_VERSION-docker.zip' '$RELEASE_NAME-$BUILD_VERSION-docker.tar.gz' docker-compose.example.yml";
+zip -r $RELEASE_NAME-$BUILD_VERSION-docker.zip $RELEASE_NAME-$BUILD_VERSION-docker.tar.gz docker-compose.example.yml
 
 # IF [ $IS_DEPLOY = false ]; THEN
 #     echo "不部署";
@@ -64,8 +64,8 @@ ssh -p $DEPLOY_PORT $DEPLOY_SSH "cp -R '$DEPLOY_DIR' '$DEPLOY_BACKUP_DIR/$DATE'"
 echo '清空部署目录内旧文件';
 echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'rm -rf $DEPLOY_DIR/*.zip'";
 ssh -p $DEPLOY_PORT $DEPLOY_SSH "rm -rf $DEPLOY_DIR/*.zip";
-echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'rm -rf $DEPLOY_DIR/*.tar'";
-ssh -p $DEPLOY_PORT $DEPLOY_SSH "rm -rf $DEPLOY_DIR/*.tar";
+echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'rm -rf $DEPLOY_DIR/*.tar.gz'";
+ssh -p $DEPLOY_PORT $DEPLOY_SSH "rm -rf $DEPLOY_DIR/*.tar.gz";
 
 echo '停止服务';
 echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'docker-compose -f $DEPLOY_DIR/docker-compose.yml down'";
@@ -80,12 +80,10 @@ echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'unzip -o $DEPLOY_DIR/$RELEASE_NAME-$BUILD
 ssh -p $DEPLOY_PORT $DEPLOY_SSH "unzip -o '$DEPLOY_DIR/$RELEASE_NAME-$BUILD_VERSION-docker.zip' -d '$DEPLOY_DIR'";
 
 echo '启动服务';
-# echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'docker images|grep $RELEASE_NAME|awk '{print $3}'|xargs docker rmi -f'";
-# ssh -p $DEPLOY_PORT $DEPLOY_SSH "docker images|grep $RELEASE_NAME|awk '{print $3}'|xargs docker rmi -f"
 echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'docker rmi $RELEASE_NAME'";
 ssh -p $DEPLOY_PORT $DEPLOY_SSH "docker rmi $RELEASE_NAME";
-echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'docker load -i $DEPLOY_DIR/$RELEASE_NAME-$BUILD_VERSION-docker.tar'";
-ssh -p $DEPLOY_PORT $DEPLOY_SSH "docker load -i '$DEPLOY_DIR/$RELEASE_NAME-$BUILD_VERSION-docker.tar'";
+echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'docker load -i $DEPLOY_DIR/$RELEASE_NAME-$BUILD_VERSION-docker.tar.gz'";
+ssh -p $DEPLOY_PORT $DEPLOY_SSH "docker load -i '$DEPLOY_DIR/$RELEASE_NAME-$BUILD_VERSION-docker.tar.gz'";
 echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'docker-compose -f $DEPLOY_DIR/docker-compose.yml up -d --remove-orphans'";
 ssh -p $DEPLOY_PORT $DEPLOY_SSH "docker-compose -f '$DEPLOY_DIR/docker-compose.yml' up -d --remove-orphans";
 
