@@ -27,22 +27,22 @@ echo "DEPLOY_BACKUP_DIR => $DEPLOY_BACKUP_DIR"
 echo "build docker"
 echo "docker images|grep $RELEASE_NAME|awk '{print $3}'|xargs docker rmi -f";
 docker images|grep $RELEASE_NAME|awk '{print $3}'|xargs docker rmi -f
-echo "docker build -t '$RELEASE_NAME:$BUILD_VERSION' .";
-docker build -t $RELEASE_NAME:$BUILD_VERSION .
-echo "docker tag '$RELEASE_NAME:$BUILD_VERSION' '$RELEASE_NAME:latest'";
-docker tag $RELEASE_NAME:$BUILD_VERSION $RELEASE_NAME:latest
+echo "docker build -t '$RELEASE_NAME:$BUILD_VERSION-$ENV_KEY' .";
+docker build -t $RELEASE_NAME:$BUILD_VERSION-$ENV_KEY .
+echo "docker tag '$RELEASE_NAME:$BUILD_VERSION-$ENV_KEY' '$RELEASE_NAME:latest-$ENV_KEY'";
+docker tag $RELEASE_NAME:$BUILD_VERSION-$ENV_KEY $RELEASE_NAME:latest-$ENV_KEY
 
 echo "save docker"
-echo "docker save '$RELEASE_NAME:latest' | gzip > $RELEASE_NAME-$BUILD_VERSION-docker.tar.gz'";
-docker save $RELEASE_NAME:latest | gzip > $RELEASE_NAME-$BUILD_VERSION-docker.tar.gz
+echo "docker save '$RELEASE_NAME:latest-$ENV_KEY' | gzip > $RELEASE_NAME-$BUILD_VERSION-docker.tar.gz'";
+docker save $RELEASE_NAME:latest-$ENV_KEY | gzip > $RELEASE_NAME-$BUILD_VERSION-docker.tar.gz
 
-echo "replace docker-compose.yml"
-echo "sed -i 's/container_name-$RELEASE_NAME/$APP_NAME/g' docker-compose.example.yml";
-sed -i "s/container_name-$RELEASE_NAME/$APP_NAME/g" docker-compose.example.yml
+# echo "replace docker-compose.yml"
+# echo "sed -i 's/container_name-$RELEASE_NAME/$APP_NAME/g' docker-compose.example.yml";
+# sed -i "s/container_name-$RELEASE_NAME/$APP_NAME/g" docker-compose.example.yml
 
 echo "build docker zip"
-echo "zip -r '$RELEASE_NAME-$BUILD_VERSION-docker.zip' '$RELEASE_NAME-$BUILD_VERSION-docker.tar.gz' docker-compose.example.yml";
-zip -r $RELEASE_NAME-$BUILD_VERSION-docker.zip $RELEASE_NAME-$BUILD_VERSION-docker.tar.gz docker-compose.example.yml
+echo "zip -r '$RELEASE_NAME-$BUILD_VERSION-$ENV_KEY-docker.zip' '$RELEASE_NAME-$BUILD_VERSION-docker.tar.gz' docker-compose.example.yml";
+zip -r $RELEASE_NAME-$BUILD_VERSION-$ENV_KEY-docker.zip $RELEASE_NAME-$BUILD_VERSION-docker.tar.gz docker-compose.example.yml
 
 # IF [ $IS_DEPLOY = false ]; THEN
 #     echo "不部署";
@@ -72,12 +72,12 @@ echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'docker-compose -f $DEPLOY_DIR/docker-comp
 ssh -p $DEPLOY_PORT $DEPLOY_SSH "docker-compose -f '$DEPLOY_DIR/docker-compose.yml' down";
 
 echo '拷贝文件到服务器';
-echo "scp -P $DEPLOY_PORT -r '$BUILD_DIR/$RELEASE_NAME-$BUILD_VERSION-docker.zip' $DEPLOY_SSH:$DEPLOY_DIR";
-scp -P $DEPLOY_PORT -r "$BUILD_DIR/$RELEASE_NAME-$BUILD_VERSION-docker.zip" $DEPLOY_SSH:$DEPLOY_DIR
+echo "scp -P $DEPLOY_PORT -r '$BUILD_DIR/$RELEASE_NAME-$BUILD_VERSION-$ENV_KEY-docker.zip' $DEPLOY_SSH:$DEPLOY_DIR";
+scp -P $DEPLOY_PORT -r "$BUILD_DIR/$RELEASE_NAME-$BUILD_VERSION-$ENV_KEY-docker.zip" $DEPLOY_SSH:$DEPLOY_DIR
 
 echo '解压缩';
-echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'unzip -o $DEPLOY_DIR/$RELEASE_NAME-$BUILD_VERSION-docker.zip -d $DEPLOY_DIR'";
-ssh -p $DEPLOY_PORT $DEPLOY_SSH "unzip -o '$DEPLOY_DIR/$RELEASE_NAME-$BUILD_VERSION-docker.zip' -d '$DEPLOY_DIR'";
+echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'unzip -o $DEPLOY_DIR/$RELEASE_NAME-$BUILD_VERSION-$ENV_KEY-docker.zip -d $DEPLOY_DIR'";
+ssh -p $DEPLOY_PORT $DEPLOY_SSH "unzip -o '$DEPLOY_DIR/$RELEASE_NAME-$BUILD_VERSION-$ENV_KEY-docker.zip' -d '$DEPLOY_DIR'";
 
 echo '启动服务';
 echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'docker rmi $RELEASE_NAME' -f";

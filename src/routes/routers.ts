@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-21 17:53:22
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-29 09:17:17
+ * @LastEditTime: 2023-08-29 12:51:58
  */
 import { RouteOptions } from "fastify";
 import { generateZip, downloadZip, getDownloadByHash } from "../controllers/zip.controller";
