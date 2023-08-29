@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-24 10:09:27
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-29 09:20:27
+ * @LastEditTime: 2023-08-29 16:04:41
  */
 import { RouteHandlerMethod, FastifyRequest, FastifyReply } from "fastify";
 import { ZipDownloadParams, ZipGenerateBody, ZipGenerateQuery, ZipGenerateItem, ZipTypeEnum, ZipGetDownloadByHash } from "../schemas/zip";
@@ -20,38 +20,46 @@ import { HEADER_KEY } from "../constant";
 
 export const generateZip: RouteHandlerMethod = async (request, reply) => {
   if (checkHeader(request, reply)) {
-    request.log.info(request.query, "generateZip querystring");
-    const query = request.query as ZipGenerateQuery;
+    try {
+      request.log.info(request.query, "generateZip querystring");
+      const query = request.query as ZipGenerateQuery;
 
-    request.log.info(request.body, "generateZip body");
-    const body = request.body as ZipGenerateBody;
+      request.log.info(request.body, "generateZip body");
+      const body = request.body as ZipGenerateBody;
 
-    validateGenerateBody(body);
-    request.log.info("generateZip validate success");
+      validateGenerateBody(body);
+      request.log.info("generateZip validate success");
 
-    const hash = generateMD5(JSON.stringify(body));
-    request.log.info(`generateZip hash [${hash}}]`);
+      const hash = generateMD5(JSON.stringify(body));
+      request.log.info(`generateZip hash [${hash}}]`);
 
-    const rootPath = `${app.config.STORAGE_PATH}/${hash}`;
-    request.log.info(`generateZip rootPath [${rootPath}}]`);
-    const folderPath = `${rootPath}/${body.name}`;
+      const rootPath = `${app.config.STORAGE_PATH}/${hash}`;
+      request.log.info(`generateZip rootPath [${rootPath}}]`);
+      const folderPath = `${rootPath}/${body.name}`;
 
-    if ((await isFolderExists(folderPath)) && !query.regenerate) {
-      request.log.info(`generateZip rootPath [${rootPath}}] already exists.`);
-    } else {
-      await rimraf(rootPath);
+      if ((await isFolderExists(folderPath)) && !query.regenerate) {
+        request.log.info(`generateZip rootPath [${rootPath}}] already exists.`);
+      } else {
+        await rimraf(rootPath);
 
-      await createOnDisk(body, rootPath);
-      request.log.info("generateZip createOnDisk success");
+        await createOnDisk(body, rootPath);
+        request.log.info("generateZip createOnDisk success");
 
-      await zipFolderAsync(folderPath, `${folderPath}.zip`);
-      request.log.info("generateZip zip success");
+        await zipFolderAsync(folderPath, `${folderPath}.zip`);
+        request.log.info("generateZip zip success");
 
-      request.log.info(app.config.ZIP_SUCCESS_DEL_FOLDER, "generateZip zip success ZIP_SUCCESS_DEL_FOLDER");
-      app.config.ZIP_SUCCESS_DEL_FOLDER === "true" && (await rimraf(`${folderPath}`));
+        request.log.info(app.config.ZIP_SUCCESS_DEL_FOLDER, "generateZip zip success ZIP_SUCCESS_DEL_FOLDER");
+        app.config.ZIP_SUCCESS_DEL_FOLDER === "true" && (await rimraf(`${folderPath}`));
+      }
+
+      return reply.send(generateDownloadUrl(hash));
+    } catch (e) {
+      request.log.error(e, "generateZip error");
+      return reply.status(200).send({
+        // @ts-ignore
+        msg: e.message,
+      });
     }
-
-    return reply.send(generateDownloadUrl(hash));
   } else {
     return reply.status(401).send("Unauthorized");
   }

@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-21 17:53:22
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-29 15:04:02
+ * @LastEditTime: 2023-08-29 16:03:00
  */
 import fastify from "fastify";
 import config from "./plugins/config";
@@ -50,12 +50,12 @@ const app = fastify({
 
 app.addHook("preSerialization", async (request, reply, payload) => {
   if (payload && Object.hasOwnProperty.call(payload, "code")) return payload;
-  return { code: 10000, flag: true, data: payload };
+  return { code: "10000", flag: true, data: payload };
 });
 
 app.setErrorHandler(function (error, request, reply) {
   app.log.error(error);
-  reply.status(200).send({ code: 500, flag: false, msg: error.message });
+  reply.status(200).send({ code: "500", flag: false, msg: error.message });
 });
 
 await app.register(cors, {
