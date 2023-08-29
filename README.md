@@ -12,7 +12,7 @@
 
 #### **generateZip**
 
-`post zip/generate`
+`post /external/generate`
 
 ###### 请求的body参数如下例子
 
@@ -56,13 +56,9 @@
   "code": 10000,
   "flag": true,
   "data": {
-    "hash": "1ede5fce3ebf76528565efa15773f7a5"
+    "hash": "1ede5fce3ebf76528565efa15773f7a5",
+    "downloadUrl": "xxxxx",
+    "expire": 1693222266 //过期时间时间戳(秒)
   }
 }
 ```
-
-#### **downloadZip**
-
-`get zip/download/:hash`
-
-使用**generate**中生成的**hash**可直接下载文件

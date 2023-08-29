@@ -3,10 +3,10 @@
  * @Author: ydfk
  * @Date: 2023-08-24 10:09:27
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-28 18:30:18
+ * @LastEditTime: 2023-08-29 09:20:27
  */
 import { RouteHandlerMethod, FastifyRequest, FastifyReply } from "fastify";
-import { ZipDownloadParams, ZipGenerateBody, ZipGenerateQuery, ZipGenerateItem, ZipTypeEnum } from "../schemas/zip";
+import { ZipDownloadParams, ZipGenerateBody, ZipGenerateQuery, ZipGenerateItem, ZipTypeEnum, ZipGetDownloadByHash } from "../schemas/zip";
 import { isFolderExists, createFolderAsync, zipFolderAsync, downloadFileFromUrl } from "../utils/fs";
 import app from "../server";
 import { validateGenerateBody } from "./validate";
@@ -82,6 +82,15 @@ export const downloadZip: RouteHandlerMethod = async (request, reply) => {
   }
 };
 
+export const getDownloadByHash: RouteHandlerMethod = async (request, reply) => {
+  const { hash } = request.params as ZipGetDownloadByHash;
+  if (await isFolderExists(`${app.config.STORAGE_PATH}/${hash}`)) {
+    return reply.send(generateDownloadUrl(hash));
+  } else {
+    return reply.status(404).send("Not found.");
+  }
+};
+
 const createItemOnDisk = async (zipGenerateItem: ZipGenerateItem, currentPath: string) => {
   const path = `${currentPath}/${zipGenerateItem.name}`;
   let parentPath = `${currentPath}/${zipGenerateItem.name}`;
@@ -150,7 +159,7 @@ const generateDownloadUrl = (hash: string) => {
     .unix();
   const params = aesEncrypt(`${hash}_${expire}`);
   return {
-    downloadUrl: `${app.config.API_URL}/zip/download/${params}`,
+    downloadUrl: `${app.config.API_URL}/download/${params}`,
     expire: expire,
     hash: hash,
   };
