@@ -41,6 +41,8 @@ docker save $DOCKER_NAME:latest | gzip > $DOCKER_NAME-$BUILD_VERSION-docker.tar.
 echo "replace docker-compose.yml"
 echo "sed -i 's/container_name-$RELEASE_NAME/$APP_NAME/g' docker-compose.example.yml";
 sed -i "s/container_name-$RELEASE_NAME/$APP_NAME/g" docker-compose.example.yml
+echo "sed -i 's/image_name-$RELEASE_NAME/$DOCKER_NAME/g' docker-compose.example.yml";
+sed -i "s/image_name-$RELEASE_NAME/$DOCKER_NAME/g" docker-compose.example.yml
 
 echo "build docker zip"
 echo "zip -r '$DOCKER_NAME-$BUILD_VERSION-docker.zip' '$DOCKER_NAME-$BUILD_VERSION-docker.tar.gz' docker-compose.example.yml";

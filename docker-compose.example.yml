@@ -2,7 +2,7 @@ version: "3"
 
 services:
   storage-service-zip:
-    image: storage-service-zip:latest-dev
+    image: image_name-storage-service-zip:latest
     container_name: container_name-storage-service-zip
     ports:
       - "23820:23820"
