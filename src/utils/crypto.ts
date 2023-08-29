@@ -3,9 +3,9 @@
  * @Author: ydfk
  * @Date: 2023-08-24 22:22:48
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-28 18:21:36
+ * @LastEditTime: 2023-08-29 09:35:59
  */
-import { AES_KEY, AES_IV } from "constant";
+import { AES_KEY, AES_IV } from "../constant";
 import { createHash, createCipheriv, createDecipheriv, randomBytes } from "crypto";
 
 export const generateMD5 = (data: string): string => {
