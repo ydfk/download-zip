@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-24 10:09:27
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-29 16:04:41
+ * @LastEditTime: 2023-08-30 17:42:27
  */
 import { RouteHandlerMethod, FastifyRequest, FastifyReply } from "fastify";
 import { ZipDownloadParams, ZipGenerateBody, ZipGenerateQuery, ZipGenerateItem, ZipTypeEnum, ZipGetDownloadByHash } from "../schemas/zip";
@@ -79,8 +79,12 @@ export const downloadZip: RouteHandlerMethod = async (request, reply) => {
     if (zipFiles.length > 0) {
       const zipFileName = zipFiles[0];
       const zipFilePath = path.join(rootPath, zipFileName);
+      const stats = await fs.promises.stat(zipFilePath);
+      const fileSize = stats.size;
 
       reply.header("Content-Disposition", `attachment; filename=${encodeURIComponent(zipFileName)}`);
+      reply.header("Content-Length", fileSize.toString());
+      reply.header("Content-Type", "application/zip");
       return reply.send(fs.createReadStream(zipFilePath));
     } else {
       return reply.status(404).send("No ZIP files found.");
