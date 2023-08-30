@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-24 10:09:27
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-30 17:42:27
+ * @LastEditTime: 2023-08-30 18:06:08
  */
 import { RouteHandlerMethod, FastifyRequest, FastifyReply } from "fastify";
 import { ZipDownloadParams, ZipGenerateBody, ZipGenerateQuery, ZipGenerateItem, ZipTypeEnum, ZipGetDownloadByHash } from "../schemas/zip";
@@ -82,10 +82,28 @@ export const downloadZip: RouteHandlerMethod = async (request, reply) => {
       const stats = await fs.promises.stat(zipFilePath);
       const fileSize = stats.size;
 
-      reply.header("Content-Disposition", `attachment; filename=${encodeURIComponent(zipFileName)}`);
-      reply.header("Content-Length", fileSize.toString());
-      reply.header("Content-Type", "application/zip");
-      return reply.send(fs.createReadStream(zipFilePath));
+      const range = request.headers.range;
+
+      if (range) {
+        const parts = range.replace(/bytes=/, "").split("-");
+        const start = parseInt(parts[0], 10);
+        const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+        const chunkSize = end - start + 1;
+
+        reply.header("Content-Range", `bytes ${start}-${end}/${fileSize}`);
+        reply.header("Accept-Ranges", "bytes");
+        reply.header("Content-Length", chunkSize.toString());
+        reply.header("Content-Type", "application/zip");
+        reply.status(206); // Partial Content
+
+        const fileStream = fs.createReadStream(zipFilePath, { start, end });
+        return reply.send(fileStream);
+      } else {
+        reply.header("Content-Disposition", `attachment; filename=${encodeURIComponent(zipFileName)}`);
+        reply.header("Content-Length", fileSize.toString());
+        reply.header("Content-Type", "application/zip");
+        return reply.send(fs.createReadStream(zipFilePath));
+      }
     } else {
       return reply.status(404).send("No ZIP files found.");
     }
@@ -169,7 +187,7 @@ const generateDownloadUrl = (hash: string) => {
   const expire = dayjs()
     .add(+app.config.ZIP_DOWNLOAD_EXPIRE || 3600, "s")
     .unix();
-  const params = aesEncrypt(`${hash}_${expire}`);
+  const params = aesEncrypt(`${hash}_${expire}_${dayjs().unix()}}`);
   return {
     downloadUrl: `${app.config.API_URL}/download/${params}`,
     expire: expire,
