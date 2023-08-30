@@ -48,10 +48,11 @@ echo "build docker zip"
 echo "zip -r '$DOCKER_NAME-$BUILD_VERSION-docker.zip' '$DOCKER_NAME-$BUILD_VERSION-docker.tar.gz' docker-compose.example.yml";
 zip -r $DOCKER_NAME-$BUILD_VERSION-docker.zip $DOCKER_NAME-$BUILD_VERSION-docker.tar.gz docker-compose.example.yml
 
-# IF [ $IS_DEPLOY = false ]; THEN
-#     echo "不部署";
-#     exit 0;
-# fi
+# 如果IS_DEPLOY为false则终止脚本执行
+if [ "$IS_DEPLOY" = "false" ]; then
+  echo "不部署";
+  exit 0;
+fi
 
 echo '清空备份目录(只保留上一个备份)';
 echo "ssh -p $DEPLOY_PORT $DEPLOY_SSH 'rm -rf $DEPLOY_BACKUP_DIR'";

@@ -3,9 +3,10 @@
  * @Author: ydfk
  * @Date: 2023-08-21 17:53:22
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-27 21:06:16
+ * @LastEditTime: 2023-08-30 14:58:02
  */
 import server from "./server";
+import { deleteStorageByDateJob } from "./jobs/deleteStorageByDate";
 
 process.on("unhandledRejection", (err) => {
   console.error(err);
@@ -17,6 +18,8 @@ const host = server.config.API_HOST;
 server.listen({ host, port });
 server.log.info(`server running on ${host}:${port}/`);
 server.log.info(server.config.NODE_ENV, `server config NODE_ENV`);
+
+deleteStorageByDateJob();
 
 for (const signal of ["SIGINT", "SIGTERM"]) {
   process.on(signal, () =>

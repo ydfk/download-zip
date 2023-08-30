@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-21 17:53:22
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-28 17:33:16
+ * @LastEditTime: 2023-08-30 14:24:28
  */
 import "dotenv/config";
 import fp from "fastify-plugin";
@@ -29,6 +29,9 @@ const ConfigSchema = Type.Strict(
     ZIP_MAX_DEPTH: Type.String(),
     FSC_BASE_URL: Type.String(),
     FSC_ACCESS_KEY: Type.String(),
+    FSC_ACCESS_SECRET: Type.String(),
+    ZIP_DELETE_OLD_STORAGE_JOB: Type.String(),
+    ZIP_DELETE_OLD_STORAGE_DAY: Type.String(),
   })
 );
 

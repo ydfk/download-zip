@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-21 17:53:22
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-29 12:51:58
+ * @LastEditTime: 2023-08-29 17:45:38
  */
 import { RouteOptions } from "fastify";
 import { generateZip, downloadZip, getDownloadByHash } from "../controllers/zip.controller";
@@ -66,5 +66,14 @@ export const renderRoutes: RouteOptions[] = [
       params: ZipGetDownloadByHashSchema,
     },
     handler: getDownloadByHash,
+  },
+  {
+    method: "POST",
+    url: "/internal/generate",
+    schema: {
+      body: ZipGenerateBodySchema,
+      querystring: ZipGenerateQuerySchema,
+    },
+    handler: generateZip,
   },
 ];
