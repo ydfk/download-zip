@@ -19,3 +19,6 @@ services:
       - FSC_ACCESS_SECRET=access_secret
       - ZIP_DELETE_OLD_STORAGE_JOB=0 0 3 * * ? #每天3点执行删除历史数据job
       - ZIP_DELETE_OLD_STORAGE_DAY=30 #删除多少天以前的历史存储文件夹
+      - ZIP_DELETE_OVERSIZE_STORAGE_JOB=0 0 1 * * ? #每天1点执行删除历史数据job
+      - ZIP_DELETE_OVERSIZE_STORAGE_SIZE=10 #存储文件夹多大后删除单位GB
+    restart: always

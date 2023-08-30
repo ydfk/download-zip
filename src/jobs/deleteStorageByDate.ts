@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-30 11:24:15
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-30 14:57:38
+ * @LastEditTime: 2023-08-30 17:31:58
  */
 import schedule from "node-schedule";
 import * as fs from "fs";
@@ -12,6 +12,7 @@ import { rimrafSync } from "rimraf";
 import app from "../server";
 
 export const deleteStorageByDateJob = () => {
+  app.log.info(`deleteStorageByDateJob init on ${app.config.ZIP_DELETE_OLD_STORAGE_JOB}`);
   schedule.scheduleJob(app.config.ZIP_DELETE_OLD_STORAGE_JOB, () => {
     app.log.info("Running deleteOldFolders job...");
     deleteOldFolders(+(app.config.ZIP_DELETE_OLD_STORAGE_DAY || 30), app.config.STORAGE_PATH);
