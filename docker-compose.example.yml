@@ -17,3 +17,5 @@ services:
       - FSC_BASE_URL=https://fileuat.baigongyi.com
       - FSC_ACCESS_KEY=access_key
       - FSC_ACCESS_SECRET=access_secret
+      - ZIP_DELETE_OLD_STORAGE_JOB=0 0 3 * * ? #每天3点执行删除历史数据job
+      - ZIP_DELETE_OLD_STORAGE_DAY=30 #删除多少天以前的历史存储文件夹
