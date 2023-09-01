@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-21 17:53:22
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-29 16:03:00
+ * @LastEditTime: 2023-09-01 11:13:28
  */
 import fastify from "fastify";
 import config from "./plugins/config";
@@ -12,6 +12,7 @@ import { IS_DEV } from "./constant";
 import { existsSync, mkdirSync } from "fs";
 import { getNowDayStr } from "./utils/date";
 import cors from "@fastify/cors";
+import helmet from "@fastify/helmet";
 
 const getLoggerFile = () => {
   if (!IS_DEV) {
@@ -64,6 +65,7 @@ await app.register(cors, {
   methods: "*",
 });
 await app.register(config);
+await app.register(helmet);
 await app.register(router);
 await app.ready();
 
