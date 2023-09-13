@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-24 18:01:22
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-25 14:08:49
+ * @LastEditTime: 2023-09-13 13:42:16
  */
 import app from "../server";
 import * as fs from "fs";
@@ -107,5 +107,24 @@ export const zipFolderAsync = async (sourcePath: string, zipFilePath: string) =>
   } catch (error) {
     app.log.error("Error zip directory:", error);
     throw new Error(`directory [${sourcePath}] zip failed. ${error}`);
+  }
+};
+
+export const findFirstNonDirectoryFile = async (dirPath: string) => {
+  try {
+    const files = await fs.promises.readdir(dirPath);
+
+    for (const file of files) {
+      const filePath = path.join(dirPath, file);
+      const stats = await fs.promises.stat(filePath);
+
+      if (!stats.isDirectory()) {
+        return file;
+      }
+    }
+    return null;
+  } catch (err) {
+    app.log.error("Error findFirstNonDirectoryFile:", err);
+    return null;
   }
 };

@@ -3,11 +3,11 @@
  * @Author: ydfk
  * @Date: 2023-08-24 10:09:27
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-30 18:06:08
+ * @LastEditTime: 2023-09-13 13:38:16
  */
 import { RouteHandlerMethod, FastifyRequest, FastifyReply } from "fastify";
 import { ZipDownloadParams, ZipGenerateBody, ZipGenerateQuery, ZipGenerateItem, ZipTypeEnum, ZipGetDownloadByHash } from "../schemas/zip";
-import { isFolderExists, createFolderAsync, zipFolderAsync, downloadFileFromUrl } from "../utils/fs";
+import { isFolderExists, createFolderAsync, zipFolderAsync, downloadFileFromUrl, findFirstNonDirectoryFile } from "../utils/fs";
 import app from "../server";
 import { validateGenerateBody } from "./validate";
 import { rimraf } from "rimraf";
@@ -73,11 +73,10 @@ export const downloadZip: RouteHandlerMethod = async (request, reply) => {
     const rootPath = path.join(app.config.STORAGE_PATH, hash);
     request.log.info(rootPath, "downloadZip zipFilePath");
 
-    const files = await fs.promises.readdir(rootPath);
-    const zipFiles = files.filter((file) => file.endsWith(".zip"));
+    const zipFile = await findFirstNonDirectoryFile(rootPath);
 
-    if (zipFiles.length > 0) {
-      const zipFileName = zipFiles[0];
+    if (zipFile) {
+      const zipFileName = zipFile;
       const zipFilePath = path.join(rootPath, zipFileName);
       const stats = await fs.promises.stat(zipFilePath);
       const fileSize = stats.size;
