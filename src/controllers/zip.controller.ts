@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-24 10:09:27
  * @LastEditors: ydfk
- * @LastEditTime: 2023-09-13 13:38:16
+ * @LastEditTime: 2023-09-13 14:28:19
  */
 import { RouteHandlerMethod, FastifyRequest, FastifyReply } from "fastify";
 import { ZipDownloadParams, ZipGenerateBody, ZipGenerateQuery, ZipGenerateItem, ZipTypeEnum, ZipGetDownloadByHash } from "../schemas/zip";
@@ -172,7 +172,7 @@ const checkHeader = (request: FastifyRequest, reply: FastifyReply): boolean => {
 };
 
 const getHashFromParams = (params: string): string => {
-  const decrypted = aesDecrypt(params);
+  const decrypted = aesDecrypt(decodeURIComponent(params));
   const [hash, expire] = decrypted.split("_");
   if (dayjs().unix() > Number(expire)) {
     app.log.error(`download url expired. [${params}]`);
@@ -188,7 +188,7 @@ const generateDownloadUrl = (hash: string) => {
     .unix();
   const params = aesEncrypt(`${hash}_${expire}_${dayjs().unix()}}`);
   return {
-    downloadUrl: `${app.config.API_URL}/download/${params}`,
+    downloadUrl: `${app.config.API_URL}/download/${encodeURIComponent(params)}`,
     expire: expire,
     hash: hash,
   };
