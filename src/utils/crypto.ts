@@ -3,10 +3,11 @@
  * @Author: ydfk
  * @Date: 2023-08-24 22:22:48
  * @LastEditors: ydfk
- * @LastEditTime: 2023-09-13 14:27:52
+ * @LastEditTime: 2023-09-13 21:38:19
  */
 import { AES_KEY, AES_IV } from "../constant";
 import { createHash, createCipheriv, createDecipheriv, randomBytes } from "crypto";
+import base64url from "base64url";
 
 export const generateMD5 = (data: string): string => {
   const hash = createHash("md5");
@@ -27,14 +28,12 @@ export const aesEncrypt = (plainText: string) => {
   const cipher = createCipheriv("aes-256-cbc", Buffer.from(AES_KEY, "base64"), Buffer.from(AES_IV, "base64"));
   let encrypted = cipher.update(plainText, "utf8", "base64");
   encrypted += cipher.final("base64");
-  //return encrypted.replace("+", "-").replace("/", "_").replace("=", "");
-  return encrypted;
+  return base64url.encode(encrypted);
 };
 
 export const aesDecrypt = (encrypted: string) => {
   const decipher = createDecipheriv("aes-256-cbc", Buffer.from(AES_KEY, "base64"), Buffer.from(AES_IV, "base64"));
-  //let decrypted = decipher.update(encrypted.replace("-", "+").replace("_", "/"), "base64", "utf8");
-  let decrypted = decipher.update(encrypted, "base64", "utf8");
+  let decrypted = decipher.update(base64url.decode(encrypted), "base64", "utf8");
   decrypted += decipher.final("utf8");
   return decrypted;
 };
