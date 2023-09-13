@@ -30,11 +30,11 @@ const validateItem = (zipGenerateItem: ZipGenerateItem, brotherItems: ZipGenerat
 
   if (zipGenerateItem.type == ZipTypeEnum.FOLDER) {
     if (!zipGenerateItem.children || zipGenerateItem.children.length === 0) {
-      throw new Error(`文件夹内容不能为空 name [${zipGenerateItem.name}]`);
-    }
-
-    for (const child of zipGenerateItem.children) {
-      validateItem(child, zipGenerateItem.children);
+      //throw new Error(`文件夹内容不能为空 name [${zipGenerateItem.name}]`);
+    } else {
+      for (const child of zipGenerateItem.children) {
+        validateItem(child, zipGenerateItem.children);
+      }
     }
   } else if (zipGenerateItem.type == ZipTypeEnum.FILE) {
     if (!zipGenerateItem.download) {
