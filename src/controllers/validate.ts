@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-24 21:30:27
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-28 17:35:16
+ * @LastEditTime: 2023-09-13 13:16:41
  */
 
 import { REGEX_FILE_NAME } from "../constant";
@@ -17,7 +17,7 @@ export const validateGenerateBody = (zipGenerateBody: ZipGenerateBody) => {
 
   const depth = getChildrenDepth(zipGenerateBody);
   if (depth > Number(process.env.ZIP_MAX_DEPTH || 10)) {
-    throw new Error(`文件夹最大深度不能超过${process.env.ZIP_MAX_DEPTH || 10}层 depth [${depth}]`);
+    throw new Error(`文件夹最大深度不能超过${process.env.ZIP_MAX_DEPTH || 10}层, 当前深度为[${depth}]`);
   }
 
   for (const child of zipGenerateBody.children) {
@@ -38,16 +38,16 @@ const validateItem = (zipGenerateItem: ZipGenerateItem, brotherItems: ZipGenerat
     }
   } else if (zipGenerateItem.type == ZipTypeEnum.FILE) {
     if (!zipGenerateItem.download) {
-      throw new Error(`文件下载不能为空 name [${zipGenerateItem.name}]`);
+      throw new Error(`文件[${zipGenerateItem.name}]下载地址不能为空`);
     }
   } else {
-    throw new Error(`类型不合法 type [${zipGenerateItem.type}]`);
+    throw new Error(`类型[${zipGenerateItem.type}]不合法`);
   }
 };
 
 const validateName = (name: string, brotherItems: ZipGenerateItem[]) => {
   if (brotherItems.filter((item) => item.name === name).length > 1) {
-    throw new Error(`名称重复 name [${name}]`);
+    throw new Error(`名称[${name}]重复`);
   }
 
   if (!name) {
@@ -55,11 +55,11 @@ const validateName = (name: string, brotherItems: ZipGenerateItem[]) => {
   }
 
   if (name.length > 80) {
-    throw new Error(`名称长度不能超过80个字符 name [${name}]`);
+    throw new Error(`名称[${name}]长度不能超过80个字符`);
   }
 
   if (!REGEX_FILE_NAME.test(name)) {
-    throw new Error(`名称不合法 name [${name}]`);
+    throw new Error(`名称[${name}]不合法, 不能包含特殊字符`);
   }
 };
 
