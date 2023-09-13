@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-24 12:48:19
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-29 09:13:59
+ * @LastEditTime: 2023-09-13 12:57:45
  */
 import { Type, Static } from "@sinclair/typebox";
 
@@ -17,8 +17,8 @@ const ZipGenerateItemSchema = Type.Recursive(
     Type.Object({
       name: Type.String(),
       type: Type.Enum(ZipTypeEnum),
-      children: Type.Optional(Type.Array(This)),
-      download: Type.Optional(Type.String()),
+      children: Type.Optional(Type.Union([Type.Array(This), Type.Null()])),
+      download: Type.Optional(Type.Union([Type.String(), Type.Null()])),
     }),
   { $id: "children" }
 );
