@@ -3,11 +3,11 @@
  * @Author: ydfk
  * @Date: 2023-08-21 17:53:22
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-29 17:45:38
+ * @LastEditTime: 2023-09-14 09:27:30
  */
 import { RouteOptions } from "fastify";
 import { generateZip, downloadZip, getDownloadByHash } from "../controllers/zip.controller";
-import { ZipDownloadParamsSchema, ZipGenerateBodySchema, ZipGenerateQuerySchema, ZipGetDownloadByHashSchema } from "../schemas/zip";
+import { ZipDownloadQuery, ZipDownloadQuerySchema, ZipGenerateBodySchema, ZipGenerateQuerySchema, ZipGetDownloadByHashSchema } from "../schemas/zip";
 import { BUILD_NUMBER } from "../constant";
 import app from "../server";
 import { generateAes, aesDecrypt } from "../utils/crypto";
@@ -38,9 +38,9 @@ export const renderRoutes: RouteOptions[] = [
   },
   {
     method: "GET",
-    url: "/download/:encrypt",
+    url: "/download",
     schema: {
-      params: ZipDownloadParamsSchema,
+      querystring: ZipDownloadQuerySchema,
     },
     handler: downloadZip,
   },
@@ -53,10 +53,13 @@ export const renderRoutes: RouteOptions[] = [
   },
   {
     method: "GET",
-    url: "/internal/aes/decrypt/:encrypted",
+    url: "/internal/aes/decrypt",
+    schema: {
+      querystring: ZipDownloadQuerySchema,
+    },
     handler: (req, res) => {
-      // @ts-ignore
-      res.send(aesDecrypt(req.params.encrypted));
+      const { key } = req.query as ZipDownloadQuery;
+      res.send(aesDecrypt(key));
     },
   },
   {

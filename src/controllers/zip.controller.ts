@@ -3,10 +3,10 @@
  * @Author: ydfk
  * @Date: 2023-08-24 10:09:27
  * @LastEditors: ydfk
- * @LastEditTime: 2023-09-13 21:39:30
+ * @LastEditTime: 2023-09-14 09:25:21
  */
 import { RouteHandlerMethod, FastifyRequest, FastifyReply } from "fastify";
-import { ZipDownloadParams, ZipGenerateBody, ZipGenerateQuery, ZipGenerateItem, ZipTypeEnum, ZipGetDownloadByHash } from "../schemas/zip";
+import { ZipDownloadQuery, ZipGenerateBody, ZipGenerateQuery, ZipGenerateItem, ZipTypeEnum, ZipGetDownloadByHash } from "../schemas/zip";
 import { isFolderExists, createFolderAsync, zipFolderAsync, downloadFileFromUrl, findFirstNonDirectoryFile } from "../utils/fs";
 import app from "../server";
 import { validateGenerateBody } from "./validate";
@@ -66,8 +66,11 @@ export const generateZip: RouteHandlerMethod = async (request, reply) => {
 };
 
 export const downloadZip: RouteHandlerMethod = async (request, reply) => {
-  request.log.info(request.params, "downloadZip params");
-  const { encrypt } = request.params as ZipDownloadParams;
+  //request.log.info(request.params, "downloadZip params");
+  //const { encrypt } = request.params as ZipDownloadParams;
+  request.log.info(request.query, "downloadZip query");
+  const query = request.query as ZipDownloadQuery;
+  const encrypt = query.key;
   const hash = getHashFromParams(encrypt);
   if (hash) {
     const rootPath = path.join(app.config.STORAGE_PATH, hash);
@@ -186,9 +189,9 @@ const generateDownloadUrl = (hash: string) => {
   const expire = dayjs()
     .add(+app.config.ZIP_DOWNLOAD_EXPIRE || 3600, "s")
     .unix();
-  const params = aesEncrypt(`${hash}_${expire}_${dayjs().unix()}}`);
+  const params = aesEncrypt(`${hash}_${expire}_${dayjs().unix()}`);
   return {
-    downloadUrl: `${app.config.API_URL}/download/${params}`,
+    downloadUrl: `${app.config.API_URL}/download?key=${params}`,
     expire: expire,
     hash: hash,
   };
