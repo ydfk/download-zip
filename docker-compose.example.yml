@@ -14,7 +14,7 @@ services:
       - ZIP_DOWNLOAD_EXPIRE=3600 # 压缩包下载过期时间，单位秒
       - ZIP_SUCCESS_DEL_FOLDER=false # 压缩完成后是否删除未压缩的文件
       - ZIP_MAX_DEPTH=10 # 压缩包最大深度
-      - FSC_BASE_URL=https://fileuat.baigongyi.com
+      - FSC_DOWNLOAD_URL=https://fileuat.baigongyi.com/internal/file/downloadLink
       - FSC_ACCESS_KEY=access_key
       - FSC_ACCESS_SECRET=access_secret
       - ZIP_DELETE_OLD_STORAGE_JOB=0 0 3 * * ? #每天3点执行删除历史数据job

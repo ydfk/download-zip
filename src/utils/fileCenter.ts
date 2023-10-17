@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-28 10:42:04
  * @LastEditors: ydfk
- * @LastEditTime: 2023-08-28 12:47:06
+ * @LastEditTime: 2023-10-17 13:30:04
  */
 
 import app from "../server";
@@ -26,7 +26,7 @@ export const getFileServiceCenterDownloadUrl = async (fscId: number): Promise<st
   let result = "";
 
   try {
-    const downloadUrl = `${app.config.FSC_BASE_URL}/internal/file/downloadLink`;
+    const downloadUrl = app.config.FSC_DOWNLOAD_URL;
     const headers = {
       "Content-Type": "application/json",
       "Api-Request-Access": app.config.FSC_ACCESS_KEY,
