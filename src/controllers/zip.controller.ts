@@ -3,7 +3,7 @@
  * @Author: ydfk
  * @Date: 2023-08-24 10:09:27
  * @LastEditors: ydfk
- * @LastEditTime: 2023-09-14 09:25:21
+ * @LastEditTime: 2023-10-20 21:25:21
  */
 import { RouteHandlerMethod, FastifyRequest, FastifyReply } from "fastify";
 import { ZipDownloadQuery, ZipGenerateBody, ZipGenerateQuery, ZipGenerateItem, ZipTypeEnum, ZipGetDownloadByHash } from "../schemas/zip";
@@ -20,6 +20,7 @@ import { HEADER_KEY } from "../constant";
 
 export const generateZip: RouteHandlerMethod = async (request, reply) => {
   if (checkHeader(request, reply)) {
+    let rootPath = "";
     try {
       request.log.info(request.query, "generateZip querystring");
       const query = request.query as ZipGenerateQuery;
@@ -33,7 +34,7 @@ export const generateZip: RouteHandlerMethod = async (request, reply) => {
       const hash = generateMD5(JSON.stringify(body));
       request.log.info(`generateZip hash [${hash}}]`);
 
-      const rootPath = `${app.config.STORAGE_PATH}/${hash}`;
+      rootPath = `${app.config.STORAGE_PATH}/${hash}`;
       request.log.info(`generateZip rootPath [${rootPath}}]`);
       const folderPath = `${rootPath}/${body.name}`;
 
@@ -54,6 +55,7 @@ export const generateZip: RouteHandlerMethod = async (request, reply) => {
 
       return reply.send(generateDownloadUrl(hash));
     } catch (e) {
+      rootPath && (await rimraf(rootPath));
       request.log.error(e, "generateZip error");
       return reply.status(200).send({
         // @ts-ignore
@@ -107,6 +109,7 @@ export const downloadZip: RouteHandlerMethod = async (request, reply) => {
         return reply.send(fs.createReadStream(zipFilePath));
       }
     } else {
+      await rimraf(rootPath);
       return reply.status(404).send("No ZIP files found.");
     }
   } else {

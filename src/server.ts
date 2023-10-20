@@ -3,18 +3,31 @@
  * @Author: ydfk
  * @Date: 2023-08-21 17:53:22
  * @LastEditors: ydfk
- * @LastEditTime: 2023-09-01 11:13:28
+ * @LastEditTime: 2023-10-20 21:19:06
  */
 import fastify from "fastify";
 import config from "./plugins/config";
 import { router } from "./routes";
 import { IS_DEV } from "./constant";
 import { existsSync, mkdirSync } from "fs";
-import { getNowDayStr } from "./utils/date";
 import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
+import rfs from "rotating-file-stream";
 
-const getLoggerFile = () => {
+const getLogger = () => {
+  const logger: any = {
+    level: "info",
+    formatters: {
+      level: (label: any) => {
+        return { level: label.toUpperCase() };
+      },
+      bindings: (bindings: any) => {
+        return { pid: bindings.pid, host: bindings.hostname };
+      },
+    },
+    timestamp: () => `,"timestamp":"${new Date(Date.now()).toISOString()}"`,
+  };
+
   if (!IS_DEV) {
     const logPath = process.env.LOG_PATH || "./log";
 
@@ -22,8 +35,14 @@ const getLoggerFile = () => {
       mkdirSync(logPath);
     }
 
-    return `${logPath}/app-${getNowDayStr()}.log`;
+    logger.stream = rfs.createStream(`${logPath}/app.log`, {
+      size: "10M", // rotate every 10 MegaBytes written
+      interval: "1d", // rotate daily
+      compress: "gzip", // compress rotated files
+    });
   }
+
+  return logger;
 };
 
 const app = fastify({
@@ -34,19 +53,7 @@ const app = fastify({
       useDefaults: true,
     },
   },
-  logger: {
-    level: "info",
-    file: getLoggerFile(),
-    formatters: {
-      level: (label) => {
-        return { level: label.toUpperCase() };
-      },
-      bindings: (bindings) => {
-        return { pid: bindings.pid, host: bindings.hostname };
-      },
-    },
-    timestamp: () => `,"timestamp":"${new Date(Date.now()).toISOString()}"`,
-  },
+  logger: getLogger(),
 });
 
 app.addHook("preSerialization", async (request, reply, payload) => {
